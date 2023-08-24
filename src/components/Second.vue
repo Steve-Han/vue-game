@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import {ref, getCurrentInstance, onMounted, reactive,toRaw,defineExpose, defineEmits} from 'vue'
+import {ref, getCurrentInstance, onMounted, reactive,toRaw,defineExpose, defineEmits,inject} from 'vue'
 import {eachRight, random} from "lodash"
 
 defineProps<{ msg: string }>()
@@ -14,6 +14,12 @@ function handleClick() {
   // 参数2：传给父组件的值
   emit('changeMsg', '鲨鱼辣椒')
 }
+
+let helloRef = inject("helloRef");
+
+onMounted(()=>{
+  helloRef.value.person.name= '哈哈'
+})
 
 </script>
 

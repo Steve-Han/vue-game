@@ -63,6 +63,10 @@ const props = defineProps({
   }
 });
 
+defineExpose({
+  createNewItem
+})
+
 watch(() => props.item, () => {
   ring = reactive(handle.deepCopy(props.item))
 })

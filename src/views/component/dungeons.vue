@@ -14,10 +14,9 @@
   </div>
 </template>
 <script setup>
-import assist from '../../assets/js/assist';
 import handle from "../../assets/js/handle.js";
 import {useStore} from '../../store'
-import {ref, reactive, computed, inject} from "vue";
+import {ref, reactive, computed, inject, defineExpose} from "vue";
 
 const store = useStore()
 
@@ -106,40 +105,47 @@ let reincarnationAttribute = computed(() => {
   return store.reincarnationAttribute
 })
 
+
+
+defineExpose({
+  evenHandle,
+  forcedToStopEvent
+})
+
 function evenHandle() {
   let startEnent = () => {
-    if (this.left >= this.nextEvent * 100 / this.dungeons.eventNum) {
-      this.evenInExecution()
-      this.nextEvent++
-      if (this.nextEvent <= this.dungeons.eventNum) {
-        this.timeOut = setTimeout(() => {
-          this.pro = setInterval(() => {
+    if (left.value >= nextEvent.value * 100 / dungeons.eventNum) {
+      evenInExecution()
+      nextEvent.value++
+      if (nextEvent.value <= dungeons.eventNum) {
+        timeOut.value = setTimeout(() => {
+          pro.value = setInterval(() => {
             startEnent()
-          }, this.moveTime + this.reincarnationAttribute.MOVESPEED)
-        }, this.battleTime + this.reincarnationAttribute.BATTLESPEED)
+          }, moveTime.value + reincarnationAttribute.value.MOVESPEED)
+        }, battleTime.value + reincarnationAttribute.value.BATTLESPEED)
       } else {
         setTimeout(() => {
-          this.eventEnd()
-        }, this.battleTime + this.reincarnationAttribute.BATTLESPEED)
+          eventEnd()
+        }, battleTime.value + reincarnationAttribute.value.BATTLESPEED)
       }
 
-      clearInterval(this.pro)
+      clearInterval(pro.value)
     }
 
-    this.left += 0.5
+    left.value += 0.5
   }
-  this.eventBegin()
-  this.pro = setInterval(() => {
+  eventBegin()
+  pro.value = setInterval(() => {
     startEnent()
-  }, this.moveTime + this.reincarnationAttribute.MOVESPEED)
+  }, moveTime.value + reincarnationAttribute.value.MOVESPEED)
 }
 
 function eventBegin() {
   store.set_sys_info({
-    msg: "你已进入" + (this.dungeons.type == "endless" ? '无尽（lv' + this.dungeons.lv + '）' : this.dungeons.name),
+    msg: "你已进入" + (dungeons.type == "endless" ? '无尽（lv' + dungeons.lv + '）' : dungeons.name),
     type: 'warning'
   });
-  if (this.dungeons.name == '黑色火山') {
+  if (dungeons.name == '黑色火山') {
     store.set_sys_info({
       msg: "似乎这就是最后的挑战了",
       type: 'battle'
@@ -157,12 +163,12 @@ function evenInExecution() {
     case 'battle':
       store.set_sys_info({
         msg: `
-              你遭遇了${event.name}(lv${this.dungeons.lv}),正在战斗中...
+              你遭遇了${event.name}(lv${dungeons.lv}),正在战斗中...
             `,
         type: 'battle'
       });
       battleComTime.value = setTimeout(() => {
-        this.battleCom(event)
+        battleCom(event)
       }, battleTime.value + reincarnationAttribute.value.BATTLESPEED)
       break;
 
@@ -188,9 +194,15 @@ let eventBegin_p = inject('eventBegin');
 let reEChallenge_p = inject('reEChallenge');
 let upEChallenge_p = inject('upEChallenge');
 let showEndlessDungeonsInfo_p = inject('showEndlessDungeonsInfo');
-let dungeons_p = inject('dungeons');
+let dungeons_p = inject('dungeonsNow');
 let inDungeons_p = inject('inDungeons');
 let endlessLv_p = inject('endlessLv');
+let dungeonsArr_p = inject('dungeonsArr');
+let backpackPanelRef = inject('backpackPanelRef');
+let weaponPanelRef = inject('weaponPanelRef');
+let armorPanelRef = inject('armorPanelRef');
+let ringPanelRef = inject('ringPanelRef');
+let neckPanelRef = inject('neckPanelRef');
 
 function eventEnd() {
   setTimeout(() => {
@@ -213,9 +225,6 @@ function eventEnd() {
       });
     }
 
-    //todo 兄弟组件间通讯的方法
-    let backpackPanel = assist().findBrothersComponents(this, 'backpackPanel', false)[0]
-
     if (dungeons.name == '黑色火山' && !store.playerAttribute.endlessLv) {
 
       store.set_sys_info({
@@ -235,8 +244,8 @@ function eventEnd() {
       });
       store.set_endless_lv(1)
     }
-    this.forcedToStopEvent()
-    let backpackPanelSign = backpackPanel.itemNum / backpackPanel.grid.length < 0.8
+    forcedToStopEvent()
+    let backpackPanelSign = backpackPanelRef.value.itemNum / backpackPanelRef.value.grid.length < 0.8
     if (reChallenge_p && backpackPanelSign) {
       eventBegin_p()
     } else if (reEChallenge_p && dungeons_p.type == 'endless') {
@@ -263,8 +272,7 @@ function battleCom(event) {
       reducedDamage = store.playerAttribute.attribute.REDUCDMG,
       playerDPS = playerAttribute.DPS,
       playerBLOC = playerAttribute.BLOC.value,
-      monsterAttribute = handle.deepCopy(event.attribute), //HP: 100,ATK: 1,
-      p = assist().findComponentUpward(this, 'index')
+      monsterAttribute = handle.deepCopy(event.attribute) //HP: 100,ATK: 1,
 
   var playerDeadTime = (playerAttribute.CURHP.value + playerBLOC) / reducedDamage / monsterAttribute.ATK,
       monsterDeadTime = (monsterAttribute.HP / playerDPS)
@@ -307,7 +315,7 @@ function battleCom(event) {
     }
     // 高难度副本只可以挑战一次
     if (dungeons.difficulty != 1) {
-      p.dungeonsArr = p.dungeonsArr.filter(({id}) => id !== dungeons.id);
+      dungeonsArr_p = dungeonsArr_p.filter(({id}) => id !== dungeons.id);
     }
   } else {
     // 玩家死亡
@@ -318,7 +326,7 @@ function battleCom(event) {
     timeOut.value = 0
     left.value = 0
     nextEvent.value = 1
-    p.inDungeons.value = false
+    inDungeons_p.value = false
     dungeons = {}
     var takeDmg = monsterDeadTime * Number(monsterAttribute.ATK)
     takeDmg = parseInt(takeDmg * reducedDamage)
@@ -349,20 +357,16 @@ function caculateTrophy(event) {
     if (Math.random() > randow) {
       var random = Math.random()
       if (random <= 0.3 && random > 0) {
-        var b = assist().findBrothersComponents(this, 'weaponPanel', false)[0]
-        var item = b.createNewItem(4, parseInt(lv + Math.random() * 6))
+        var item = weaponPanelRef.value.createNewItem(4, parseInt(lv + Math.random() * 6))
         items.push(JSON.parse(item))
       } else if (random <= 0.5 && random > 0.3) {
-        var b = assist().findBrothersComponents(this, 'armorPanel', false)[0]
-        var item = b.createNewItem(4, parseInt(lv + Math.random() * 6))
+        var item = armorPanelRef.value.createNewItem(4, parseInt(lv + Math.random() * 6))
         items.push(JSON.parse(item))
       } else if (random <= 0.75 && random > 0.5) {
-        var b = assist().findBrothersComponents(this, 'ringPanel', false)[0]
-        var item = b.createNewItem(4, parseInt(lv + Math.random() * 6))
+        var item = ringPanelRef.value.createNewItem(4, parseInt(lv + Math.random() * 6))
         items.push(JSON.parse(item))
       } else {
-        var b = assist().findBrothersComponents(this, 'neckPanel', false)[0]
-        var item = b.createNewItem(4, parseInt(lv + Math.random() * 6))
+        var item = neckPanelRef.value.createNewItem(4, parseInt(lv + Math.random() * 6))
         items.push(JSON.parse(item))
       }
 
@@ -393,20 +397,15 @@ function caculateTrophy(event) {
     // this.createEquip(equipQua,lv)
     var index = Math.floor((Math.random() * 4));
     if (index == 0) {
-      var b = assist().findBrothersComponents(this, 'weaponPanel', false)[0]
-      var item = b.createNewItem(equipQua, lv)
+      var item = weaponPanelRef.value.createNewItem(equipQua, lv)
     } else if (index == 1) {
-      var b = assist().findBrothersComponents(this, 'armorPanel', false)[0]
-      var item = b.createNewItem(equipQua, lv)
+      var item = armorPanelRef.value.createNewItem(equipQua, lv)
     } else if (index == 2) {
-      var b = assist().findBrothersComponents(this, 'ringPanel', false)[0]
-      var item = b.createNewItem(equipQua, lv)
+      var item = ringPanelRef.value.createNewItem(equipQua, lv)
     } else {
-      var b = assist().findBrothersComponents(this, 'neckPanel', false)[0]
-      var item = b.createNewItem(equipQua, lv)
+      var item = neckPanelRef.value.createNewItem(equipQua, lv)
     }
     items.push(JSON.parse(item))
-    var backpackPanel = assist().findBrothersComponents(this, 'backpackPanel', false)[0]
     var goldObtainRatio = 1
     if (dungeons.type == 'endless') {
       var endlessLv = store.playerAttribute.endlessLv
@@ -426,7 +425,7 @@ function caculateTrophy(event) {
     }
     items.map(item => {
       // 当开启了自动出售并且新获得的装备品质低于史诗时，自动出售
-      if (backpackPanel.autoSell[equipQua] && item.quality.name != "独特") {
+      if (backpackPanelRef.value.autoSell[equipQua] && item.quality.name != "独特") {
         var gold = item.lv * item.quality.qualityCoefficient * 30
         store.set_player_gold(parseInt(gold));
         store.set_sys_info({
@@ -436,9 +435,9 @@ function caculateTrophy(event) {
           type: 'trophy',
         });
       } else {
-        for (let i = 0; i < backpackPanel.grid.length; i++) {
-          if (JSON.stringify(backpackPanel.grid[i]).length < 3) {
-            backpackPanel.grid[i] = item
+        for (let i = 0; i < backpackPanelRef.value.grid.length; i++) {
+          if (JSON.stringify(backpackPanelRef.value.grid[i]).length < 3) {
+            backpackPanelRef.value.grid[i] = item
             break;
           }
         }

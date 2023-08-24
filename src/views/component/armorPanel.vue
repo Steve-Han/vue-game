@@ -60,6 +60,10 @@ const props = defineProps({
   }
 });
 
+defineExpose({
+  createNewItem
+})
+
 watch( () => props.item, () => {
   armor = reactive(handle.deepCopy(props.item))
 })

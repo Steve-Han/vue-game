@@ -63,6 +63,10 @@ const props = defineProps({
   }
 });
 
+defineExpose({
+  createNewItem
+})
+
 watch(() => props.item, (value, oldValue, onCleanup) => {
   neck = reactive(handle.deepCopy(value))
 })

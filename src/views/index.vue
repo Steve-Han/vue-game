@@ -225,24 +225,24 @@
     </div>
     <div class="map">
       <div class="plan" v-show='inDungeons'>
-        <dungeonsVue ref="dungeonsRef"></dungeonsVue>
+        <dungeons ref="dungeonsRef"></dungeons>
         <div class="eventEnd button" @click='eventEnd'>结束挑战</div>
       </div>
-      <div class="dungeons-Info" v-if="dungeons&&!inDungeons">
-        <i class="dungeons-re" v-if="dungeons.type=='endless'" @click="resetEndlessLv"></i>
+      <div class="dungeons-Info" v-if="dungeonsNow&&!inDungeons">
+        <i class="dungeons-re" v-if="dungeonsNow.type=='endless'" @click="resetEndlessLv"></i>
         <i class="dungeons-close" @click="closeDungeonsInfo"></i>
-        <div class="dungeons-title" v-if="dungeons.type=='endless'">当前副本：无尽</div>
-        <div class="dungeons-title" v-else>当前副本：lv{{ dungeons.lv }}_{{ dungeons.difficultyName }}</div>
+        <div class="dungeons-title" v-if="dungeonsNow.type=='endless'">当前副本：无尽</div>
+        <div class="dungeons-title" v-else>当前副本：lv{{ dungeonsNow.lv }}_{{ dungeonsNow.difficultyName }}</div>
         <div class="jjj">
-          <div class="dungeons-dps" v-if="dungeons.type=='endless'">推荐DPS：???</div>
-          <div class="dungeons-dps" v-else>推荐DPS：{{ dungeons.needDPS }}</div>
-          <div class="dungeons-lv" v-if="dungeons.type=='endless'">无尽层数:{{ dungeons.lv }}</div>
-          <div class="dungeons-lv" v-else>副本等级:{{ dungeons.lv }}</div>
+          <div class="dungeons-dps" v-if="dungeonsNow.type=='endless'">推荐DPS：???</div>
+          <div class="dungeons-dps" v-else>推荐DPS：{{ dungeonsNow.needDPS }}</div>
+          <div class="dungeons-lv" v-if="dungeonsNow.type=='endless'">无尽层数:{{ dungeonsNow.lv }}</div>
+          <div class="dungeons-lv" v-else>副本等级:{{ dungeonsNow.lv }}</div>
         </div>
         <div class="jjj">
-          <div class="dungeons-difficulty">当前副本难度等级：{{ dungeons.difficultyName }}</div>
+          <div class="dungeons-difficulty">当前副本难度等级：{{ dungeonsNow.difficultyName }}</div>
         </div>
-        <div class="info" v-if="dungeons.type=='endless'">
+        <div class="info" v-if="dungeonsNow.type=='endless'">
           <p>- 无尽难度大致为层数*5的极难副本难度</p>
           <p>- 无尽模式下仅能获得金币，将不会有装备</p>
           <p>- 无尽模式挑战成功会回满血</p>
@@ -254,8 +254,8 @@
           <p>- 困难，极难下有几率出现套装装备(下个版本加入)</p>
         </div>
         <div class="handle">
-          <div v-if="dungeons.type!='endless'">
-            <p v-if="dungeons.difficulty==1"><input type="checkbox" name="" v-model="reChallenge"> 重复挑战</p>
+          <div v-if="dungeonsNow.type!='endless'">
+            <p v-if="dungeonsNow.difficulty==1"><input type="checkbox" name="" v-model="reChallenge"> 重复挑战</p>
           </div>
           <div class="handle-column" style="display:flex;flex-direction:column" v-else>
             <p><input type="checkbox" name="" v-model="upEChallenge"> 向上挑战</p>
@@ -461,7 +461,7 @@ import armorPanel from './component/armorPanel.vue'
 import ringPanel from './component/ringPanel.vue'
 import neckPanel from './component/neckPanel.vue'
 import backpackPanel from './component/backpackPanel.vue'
-import dungeonsVue from './component/dungeons.vue'
+import dungeons from './component/dungeons.vue'
 import cTooltip from './uiComponent/tooltip.vue'
 import shopPanel from './component/shopPanel.vue'
 import reinPanel from './component/reincarnationPanel.vue'
@@ -472,7 +472,7 @@ import qa from './component/qa.vue'
 import {Base64} from 'js-base64'
 import handle from '../assets/js/handle'
 import {useStore} from '../store'
-import {ref, reactive, watch, onMounted, computed, getCurrentInstance, provide} from "vue"
+import {ref, reactive, watch, onMounted, computed, provide} from "vue"
 
 const store = useStore()
 
@@ -507,7 +507,7 @@ let inDungeons = ref(false)  //是否在副本进程中
 let reChallenge = ref(false)
 let upEChallenge = ref(false)
 let reEChallenge = ref(false)
-let dungeons = reactive({})
+let dungeonsNow = reactive({})
 let dungeonsArr = reactive([])
 let dungeonsTime = ref(0) //刷新副本计时器)
 let dungeonsTimeO = ref(30) //刷新副本时间间隔 单位：S
@@ -530,7 +530,6 @@ let needComparison = ref(true)
 let saveData = reactive({})
 let saveDateString = ref('')
 let debounceTime = ref(0)  //防抖计时
-let proxy = null;
 
 // 窗口自适应
 window.onresize = () => {
@@ -579,8 +578,6 @@ onMounted(() => {
   loadGame(sd)
   //生成随机副本
   createdDungeons()
-
-  proxy = getCurrentInstance();
 })
 
 let attribute = computed(() => {
@@ -620,9 +617,15 @@ provide("eventBegin", eventBegin)
 provide("reEChallenge", reEChallenge)
 provide("upEChallenge", upEChallenge)
 provide("showEndlessDungeonsInfo", showEndlessDungeonsInfo)
-provide("dungeons", dungeons)
+provide("dungeonsNow", dungeonsNow)
 provide("inDungeons", inDungeons)
 provide("endlessLv", endlessLv)
+provide("dungeonsArr", dungeonsArr)
+provide("backpackPanelRef", backpackPanelRef)
+provide("weaponPanelRef", weaponPanelRef)
+provide("armorPanelRef", armorPanelRef)
+provide("ringPanelRef", ringPanelRef)
+provide("neckPanelRef", neckPanelRef)
 
 watch(sysInfo, () => {
   var element = document.getElementById('sysInfo')
@@ -633,18 +636,18 @@ watch(sysInfo, () => {
 })
 
 watch(upEChallenge, () => {
-  this.reEChallenge = !this.upEChallenge
+  reEChallenge.value = !upEChallenge.value
 })
 watch(reEChallenge, () => {
-  this.upEChallenge = !this.reEChallenge
+  upEChallenge.value = !reEChallenge.value
 })
 watch(GMEquipLv, () => {
-  this.GMEquipLv = this.GMEquipLv > 210 ? 210 : this.GMEquipLv
-  this.GMEquipLv = this.GMEquipLv < 1 ? 1 : this.GMEquipLv
+  GMEquipLv.value = GMEquipLv.value > 210 ? 210 : GMEquipLv.value
+  GMEquipLv.value = GMEquipLv.value < 1 ? 1 : GMEquipLv.value
 })
 watch(GMEquipQu, () => {
-  this.GMEquipQu = this.GMEquipQu > 4 ? 4 : this.GMEquipQu
-  this.GMEquipQu = this.GMEquipQu < 0 ? 0 : this.GMEquipQu
+  GMEquipQu.value = GMEquipQu.value> 4 ? 4 : GMEquipQu.value
+  GMEquipQu.value = GMEquipQu.value < 0 ? 0 : GMEquipQu.value
 })
 
 function navToGithub() {
@@ -780,7 +783,7 @@ function windowVisibilitychange() {
   if (!inDungeons.value) {
     if (!autoHealthRecovery.value) {
       autoHealthRecovery.value = setInterval(() => {
-        store.set_player_curhp(this.healthRecoverySpeed * (attribute.value.MAXHP.value / 50))
+        store.set_player_curhp(healthRecoverySpeed.value * (attribute.value.MAXHP.value / 50))
       }, 1000)
     }
     return
@@ -790,7 +793,7 @@ function windowVisibilitychange() {
     autoHealthRecovery.value = 0
   } else {
     autoHealthRecovery.value = setInterval(() => {
-      store.set_player_curhp(this.healthRecoverySpeed * (attribute.value.MAXHP.value / 50))
+      store.set_player_curhp(healthRecoverySpee.value * (attribute.value.MAXHP.value / 50))
     }, 1000)
   }
 }
@@ -975,25 +978,25 @@ function createGMEquip() {
 
 function showDungeonsInfo(k) {
   // var b = this.findComponentDownward(this, 'dungeons')
-  dungeons = dungeonsArr[k]
-  if (dungeons.difficulty != 1) {
+  dungeonsNow = dungeonsArr[k]
+  if (dungeonsNow.difficulty != 1) {
     reChallenge.value = false
   }
 }
 
 function showEndlessDungeonsInfo() {
   reChallenge.value = false
-  dungeons = handle.createRandomDungeons(store.playerAttribute.endlessLv * 5, 3)
-  dungeons.lv = store.playerAttribute.endlessLv
-  dungeons.type = 'endless'
+  dungeonsNow = handle.createRandomDungeons(store.playerAttribute.endlessLv * 5, 3)
+  dungeonsNow.lv = store.playerAttribute.endlessLv
+  dungeonsNow.type = 'endless'
 }
 
 function closeDungeonsInfo() {
-  this.dungeons = ''
+  dungeonsNow = {}
 }
 
 function eventBegin() {
-  dungeonsRef.value.dungeons = dungeons
+  dungeonsRef.value.dungeons = dungeonsNow
   dungeonsRef.value.evenHandle()
 
   inDungeons.value = true
@@ -1001,7 +1004,7 @@ function eventBegin() {
 
 function eventEnd() {
   inDungeons.value = false;
-  dungeons = {}
+  dungeonsNow = {}
 
   dungeonsRef.value.forcedToStopEvent()
 
@@ -1023,7 +1026,7 @@ function resetEndlessLv() {
     confirmBtnText: '重置',
     onClose: () => {
       store.set_endless_lv(1);
-      this.closeDungeonsInfo()
+      closeDungeonsInfo()
       store.set_sys_info({
         msg: `
               无尽挑战层数重置到了1级。
@@ -1053,8 +1056,8 @@ function openMenuPanel(type) {
 }
 
 function closePanel() {
-  backpackPanelOpened = shopPanelOpened = importSaveDataPanelOpened = exportSaveDataPanelOpened = strengthenEquipmentPanelOpened = reinPanelOpened = false
-  GMOpened = false
+  backpackPanelOpened.value = shopPanelOpened.value = importSaveDataPanelOpened.value = exportSaveDataPanelOpened.value = strengthenEquipmentPanelOpened.value = reinPanelOpened.value = false
+  GMOpened.value = false
   saveDateString.value = ''
 
   strengthenEquipmentRef.value.stopAutoStreng()
@@ -1064,9 +1067,9 @@ function initial() {
   let html = document.documentElement;
   let wW = html.clientHeight;
   let designSize = 1000; //设计高度
-/*  if (!fullScreen) {
-    wW = html.clientHeight;
-  }*/
+  /*  if (!fullScreen) {
+      wW = html.clientHeight;
+    }*/
   let rem = (wW * 100) / designSize;
   document.documentElement.style.fontSize = rem + "px";
 
@@ -1125,7 +1128,7 @@ function showItemInfo(e, type, item, needComparison_input) {
 
 function closeItemInfo() {
   needComparison.value = true;
-  weaponShow = armorShow = ringShow = neckShow = false
+  weaponShow.value = armorShow.value = ringShow.value = neckShow.value = false
 }
 
 function setSysInfo() {

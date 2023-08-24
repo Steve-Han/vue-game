@@ -62,6 +62,10 @@ const props = defineProps({
   }
 });
 
+defineExpose({
+  createNewItem
+})
+
 watch(() => props.item, () => {
   weapon = reactive(handle.deepCopy(props.item))
 })
