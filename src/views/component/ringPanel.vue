@@ -68,7 +68,7 @@ defineExpose({
 })
 
 watch(() => props.item, () => {
-  ring = reactive(handle.deepCopy(props.item))
+  handle.setReactive(ring, handle.deepCopy(props.item))
 })
 
 function createNewItem(qualityIndex, lv) {
@@ -140,16 +140,16 @@ function createQua() {
   var a = qualityProbability[index], b = qualityProbability, qualityRes
   switch (a) {
     case b[0]:
-      qualityRes = quality[0]
+      qualityRes = equiAttributeRing.quality[0]
       break;
     case b[1]:
-      qualityRes = quality[1]
+      qualityRes = equiAttributeRing.quality[1]
       break;
     case b[2]:
-      qualityRes = quality[2]
+      qualityRes = equiAttributeRing.quality[2]
       break;
     case b[3]:
-      qualityRes = quality[3]
+      qualityRes = equiAttributeRing.quality[3]
       break;
     default:
       break;

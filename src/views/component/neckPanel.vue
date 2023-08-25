@@ -68,7 +68,7 @@ defineExpose({
 })
 
 watch(() => props.item, (value, oldValue, onCleanup) => {
-  neck = reactive(handle.deepCopy(value))
+  handle.setReactive(neck, handle.deepCopy(props.item))
 })
 
 function createNewItem(qualityIndex, lv) {

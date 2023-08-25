@@ -65,7 +65,7 @@ defineExpose({
 })
 
 watch( () => props.item, () => {
-  armor = reactive(handle.deepCopy(props.item))
+  handle.setReactive(armor, handle.deepCopy(props.item))
 })
 
 function createNewItem(qualityIndex, lv) {
@@ -141,24 +141,24 @@ function createType(armor) {
 
 function createQua() {
   var index = Math.floor((Math.random() * qualityProbability.length));
-  var a = qualityProbability[index], b = qualityProbability, quality
+  var a = qualityProbability[index], b = qualityProbability, qualityRes
   switch (a) {
     case b[0]:
-      quality = this.quality[0]
+      qualityRes = equiAttributeArmor.quality[0]
       break;
     case b[1]:
-      quality = this.quality[1]
+      qualityRes = equiAttributeArmor.quality[1]
       break;
     case b[2]:
-      quality = this.quality[2]
+      qualityRes = equiAttributeArmor.quality[2]
       break;
     case b[3]:
-      quality = this.quality[3]
+      qualityRes = equiAttributeArmor.quality[3]
       break;
     default:
       break;
   }
-  return quality
+  return qualityRes
 }
 
 function createExtraEntry(armor) {

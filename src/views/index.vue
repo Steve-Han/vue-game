@@ -195,7 +195,7 @@
 
       <div class="ring" @mouseover="showItemInfo($event,'ring',playerRing,false)" @mouseleave="closeItemInfo">
         <div class="title" v-if="playerRing">
-          <div class='icon' :class="{'red-flash':playerRing.enchantlvl >= 13,unique:playerRing.quality.name == '独特'}"
+          <div class='icon' :class="{'red-flash':playerRing.enchantlvl >= 13, unique:playerRing.quality.name == '独特'}"
                :style="{'box-shadow':'inset 0 0 7px 2px ' + playerRing.quality.color}">
             <img :src="playerRing.type.iconSrc" alt="">
           </div>
@@ -382,7 +382,7 @@
       <neckPanel :item="neck" v-show="neckShow" ref="neckPanelRef"></neckPanel>
       <neckPanel :item="playerNeck" v-show="neckShow && needComparison" ref="playerNeckRef"></neckPanel>
       <div class="item-close" @click="closeItemInfo"
-           v-if="(armorShow||ringShow||weaponShow||neckShow)&&needComparison&&operatorSchemaIsMobile">
+           v-if="(armorShow||ringShow||weaponShow||neckShow) && needComparison && operatorSchemaIsMobile">
         关闭对比
       </div>
     </div>
@@ -1075,7 +1075,6 @@ function openMenuPanel(type) {
     default:
       break;
   }
-
 }
 
 function closePanel() {
@@ -1129,20 +1128,20 @@ function showItemInfo(e, type, item, needComparison_input) {
   }
   switch (type) {
     case 'weapon':
-      weapon = item
-      weaponShow = true
+      handle.setReactive(weapon, item)
+      weaponShow.value = true
       break;
     case 'armor':
-      armor = item
-      armorShow = true
+      handle.setReactive(armor, item)
+      armorShow.value = true
       break;
     case 'ring':
-      ring = item
-      ringShow = true
+      handle.setReactive(ring, item)
+      ringShow.value = true
       break;
     case 'neck':
-      neck = item
-      neckShow = true
+      handle.setReactive(neck, item)
+      neckShow.value = true
       break;
     default:
       break;
