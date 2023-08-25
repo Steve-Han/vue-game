@@ -70,6 +70,7 @@ let currentItemIndex = ref(0)
 let autoSellPanel = ref(false)
 let autoSell = reactive([false, false, false, false])
 let backpackRoot = ref(null)
+let item;
 
 //暴露方法给父组件
 defineExpose({
@@ -104,7 +105,7 @@ let itemNum = computed(() => {
 
 
 onMounted(() => {
-  var item = {
+  item = reactive({
     lv: 30,
     itemType: 'armor',
     quality: {
@@ -140,7 +141,7 @@ onMounted(() => {
       {type: "HP", value: 93, showVal: "+93", name: "生命值"},
       {type: "HP", value: 97, showVal: "+97", name: "生命值"},
     ],
-  };
+  })
 })
 
 // 点击span仍然可以设置input的值，操作的是数组，所以需要$set来实现双向绑定
@@ -159,10 +160,8 @@ function neaten() {
     }
   })
 
-  grid.split(0, grid.length)
-  tem.map(e =>{
-    grid.push(e)
-  })
+  grid.fill({})
+  grid.concat(tem)
 
   tem = []
 }
@@ -176,7 +175,7 @@ function sell() {
   grid.map((item, index) => {
     if (JSON.stringify(item) != '{}') {
       currentItemIndex.value = index
-      currentItem = item
+      handle.setReactive(currentItem, item)
       sellTheEquipment(true)
     }
   })
@@ -184,7 +183,7 @@ function sell() {
 
 function openMenu(k, e) {
   currentItemIndex.value = k
-  currentItem = grid[k]
+  handle.setReactive(currentItem, grid[k])
   store.set_need_strengthen_equipment(currentItem)
   const menuMinWidth = 105;
   const offsetLeft = backpackRoot.value.getBoundingClientRect().left; // container margin left

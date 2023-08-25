@@ -1,13 +1,22 @@
 <script setup lang="ts">
-import {ref, getCurrentInstance, onMounted, reactive,toRaw,defineExpose} from 'vue'
+import {ref, getCurrentInstance, onMounted, reactive, toRaw, defineExpose} from 'vue'
 import {eachRight, random} from "lodash"
+import * as stream from "stream";
 
 defineProps<{ msg: string }>()
 
 let proxy = null
 let person = ref({
-  name:'zhagnsan',
-  age:12
+  name: 'zhagnsan',
+  age: 12
+})
+
+let stu = reactive({
+  name: '哈哈',
+  age: 123,
+  show: () => {
+    console.log(this.name)
+  }
 })
 
 let grid = reactive(new Array(32).fill({}))
@@ -16,12 +25,16 @@ defineExpose({
   person
 })
 
-function showProxy(e){
-  //grid.splice(0, grid.length)
-  grid.fill({0:'1'}, 0 ,grid.length)
+function showProxy(e) {
+
+  //先清空stu的属性
+  clear(stu)
+  //再设置
+  Object.assign(stu, {'trick': 'joke'})
 }
 
-function showProxy1(e){
+
+function showProxy1(e) {
 
 }
 
@@ -32,11 +45,11 @@ function changeMessage(data) {
   console.log(data)
 }
 
-function changeMsg(data){
+function changeMsg(data) {
   changeMessage(data)
 }
 
-onMounted(()=>{
+onMounted(() => {
   proxy = getCurrentInstance()
 })
 
@@ -62,7 +75,7 @@ for (let i = 0; i < 9; i++) {
 <template>
   <div ref="root">
     <!--数据双向绑定-->
-    <span>{{ grid }}</span>
+    <span>{{ stu }}</span>
 
     <div class="card">
       <button type="button" @click="count++">count is {{ count }}</button>

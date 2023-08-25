@@ -499,9 +499,7 @@ function caculateTrophy(event) {
       z-index: 2;
       height: 48px;
       width: 32px;
-      // background-position: -0px 96px !important;
-      background-repeat: no-repeat;
-      background: url(../../assets/icons/map/player-s.png);
+      background: url(../../assets/icons/map/player-s.png) no-repeat;
     }
 
     .monster {

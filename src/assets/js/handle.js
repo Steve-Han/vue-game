@@ -4,6 +4,24 @@ function deepCopy(data) {
 }
 
 /**
+ * 清空vue3 reactive 对象
+ * */
+const clearReactive = (obj) => {
+    Object.keys(obj).map(key => {
+        delete obj[key]
+    })
+}
+
+/**
+ * 设置vue3 reactive 对象
+ * */
+const setReactive = (target, source) => {
+    clearReactive(target)
+
+    Object.assign(target, source)
+}
+
+/**
  * 根据强化等级计算强化后属性
  * @param {obj} entry 装备基础属性
  * @param {number} lv  装备强化等级
@@ -317,6 +335,8 @@ function createRandomEntry(lv, qualityCoefficient) {
 }
 
 export default {
+    clearReactive,
+    setReactive,
     deepCopy,
     CalculateStrAttr,
     createRandomEntry,
