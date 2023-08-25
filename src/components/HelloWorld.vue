@@ -10,16 +10,19 @@ let person = ref({
   age:12
 })
 
+let grid = reactive(new Array(32).fill({}))
+
 defineExpose({
   person
 })
 
 function showProxy(e){
-  person.value = {}
+  //grid.splice(0, grid.length)
+  grid.fill({0:'1'}, 0 ,grid.length)
 }
 
 function showProxy1(e){
-  person.value.name = e.target.value
+
 }
 
 let root = ref(null)
@@ -59,7 +62,7 @@ for (let i = 0; i < 9; i++) {
 <template>
   <div ref="root">
     <!--数据双向绑定-->
-    <span>{{ person }}</span>
+    <span>{{ grid }}</span>
 
     <div class="card">
       <button type="button" @click="count++">count is {{ count }}</button>
@@ -68,7 +71,7 @@ for (let i = 0; i < 9; i++) {
         <code>components/HelloWorld.vue</code> to test HMR
       </p>
       <button type="button" @click="showProxy($event)">showProxy</button>
-      <button type="button" @click="showProxy1($event)">showProxy</button>
+      <button type="button" @click="showProxy1($event)">showProxy1</button>
     </div>
   </div>
 </template>

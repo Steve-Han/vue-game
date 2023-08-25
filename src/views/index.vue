@@ -878,7 +878,9 @@ function loadGame(sd) {
       saveData.lv = saveData.lv ? saveData.lv : 1
 
       if (JSON.stringify(saveData) != '{}') {
-        backpackPanelRef.value.grid = saveData.backpackEquipment
+        for (let i = 0; i < saveData.backpackEquipment.length; i++) {
+          backpackPanelRef.value.grid[i] = saveData.backpackEquipment[i]
+        }
       }
       if (!saveData.playerEquipment.playerNeck) {
         saveData.playerEquipment.playerNeck = {

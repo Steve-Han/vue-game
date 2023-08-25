@@ -37,7 +37,7 @@ import {ref, reactive, defineProps, watch, onMounted, inject} from "vue";
 
 const store = useStore()
 
-let grid = reactive([])
+let grid = reactive(new Array(5).fill({}))
 let left = ref(0)
 let top = ref(0)
 let visible = ref(false)
@@ -51,9 +51,6 @@ let isTouch = ref(false)
 let tipsFlag = ref(false)
 let tipsFlagComfirm = ref(false)
 let shopRoot = ref(null)
-
-
-grid = new Array(5).fill({});
 
 watch(visible, (value, oldValue, onCleanup) => {
   if (value) {
@@ -125,7 +122,7 @@ function refreshShopItems(constraint) {
       return
     }
     refreshTime.value--
-    grid = new Array(5).fill({});
+    grid.fill({}, 0 ,grid.length)
     var wlv = Number(store.playerAttribute.weapon.lv);
     var alv = Number(store.playerAttribute.armor.lv);
     var ringlv = Number(store.playerAttribute.ring.lv);
@@ -174,7 +171,7 @@ function refreshShopItems(constraint) {
       });
     } else {
       store.set_player_gold(-10000);
-      grid = new Array(5).fill({});
+      grid.fill({}, 0 , grid.length)
       var wlv = Number(store.playerAttribute.weapon.lv);
       var alv = Number(store.playerAttribute.armor.lv);
       var ringlv = Number(store.playerAttribute.ring.lv);

@@ -5,7 +5,7 @@
         <div class="title" v-if="v.lv" @contextmenu.prevent="openMenu(k,$event)"
              @touchstart.stop.prevent="openMenu(k,$event)" @mouseover="showItemInfo($event,v.itemType,v)"
              @mouseleave="closeItemInfo">
-          <div class="icon" :class="{'red-flash':v.enchantlvl>=13}"
+          <div class="icon" :class="{'red-flash':v.enchantlvl >= 13}"
                :style="{ 'box-shadow': 'inset 0 0 7px 2px ' + v.quality.color }">
             <img :src="v.type.iconSrc" alt=""/>
           </div>
@@ -158,12 +158,17 @@ function neaten() {
       temIndex++
     }
   })
-  grid = handle.deepCopy(tem)
+
+  grid.split(0, grid.length)
+  tem.map(e =>{
+    grid.push(e)
+  })
+
   tem = []
 }
 
 function clear() {
-  grid = new Array(32).fill({});
+  grid.fill({}, 0 , grid.length)
 }
 
 // 一键出售
@@ -354,9 +359,9 @@ function sellTheEquipment(withoutWarning, sellMsg) {
 
   .title-lock {
     position: absolute;
-    // width: 0.2rem;
+    /*// width: 0.2rem;
     // height: 0.2rem;
-    // background: red;
+    // background: red;*/
     top: -0.03rem;
     right: -0.11rem;
     width: 0;
