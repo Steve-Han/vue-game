@@ -105,9 +105,8 @@ let reincarnationAttribute = computed(() => {
   return store.reincarnationAttribute
 })
 
-
-
 defineExpose({
+  dungeons,
   evenHandle,
   forcedToStopEvent
 })
