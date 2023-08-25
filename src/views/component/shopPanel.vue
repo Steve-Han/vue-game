@@ -1,5 +1,5 @@
 <template>
-  <div class="shop">
+  <div class="shop" ref="shopRoot">
     <div class="content">
       <div class="grid" v-for="(v, k) in grid" :key="k">
         <div class="title" v-if="v.lv" @contextmenu.prevent="openMenu(k, $event)"
@@ -33,13 +33,13 @@
 </template>
 <script setup>
 import {useStore} from '../../store'
-import {ref, reactive, defineProps, watch, onMounted} from "vue";
+import {ref, reactive, defineProps, watch, onMounted, inject} from "vue";
 
 const store = useStore()
 
 let grid = reactive([])
-let left = ref("")
-let top = ref("")
+let left = ref(0)
+let top = ref(0)
 let visible = ref(false)
 let currentItem = reactive({})
 let currentItemIndex = ref("")
@@ -50,6 +50,7 @@ let timeInterval = ref(0)
 let isTouch = ref(false)
 let tipsFlag = ref(false)
 let tipsFlagComfirm = ref(false)
+let shopRoot = ref(null)
 
 
 grid = new Array(5).fill({});
@@ -106,7 +107,7 @@ function refreshShopItems(constraint) {
         },
         onClose: () => {
           tipsFlagComfirm.value = false
-          this.refreshShopItems(true)
+          refreshShopItems(true)
         }
       })
       return
@@ -133,7 +134,7 @@ function refreshShopItems(constraint) {
       var lv = Math.floor(store.playerAttribute.lv + Math.random() * 3);
       //装备等级最高200
       // lv = lv > 200 ? 200 : lv
-      this.createShopItem(lv);
+      createShopItem(lv);
     }
   }
 }
@@ -159,7 +160,7 @@ function refreshShopItems(constraint) {
         },
         onClose: () => {
           tipsFlagComfirm.value = false
-          this.goldRefreshShopItems(true)
+          goldRefreshShopItems(true)
         }
       })
       return
@@ -180,10 +181,21 @@ function refreshShopItems(constraint) {
       var necklv = Number(store.playerAttribute.neck.lv);
       for (let i = 0; i < 5; i++) {
         var lv = Math.floor(store.playerAttribute.lv + Math.random() * 3);
-        this.createShopItem(lv);
+        createShopItem(lv);
       }
     }
   }
+
+let backpackPanelRef = inject('backpackPanelRef');
+let weaponPanelRef = inject('weaponPanelRef');
+let armorPanelRef = inject('armorPanelRef');
+let ringPanelRef = inject('ringPanelRef');
+let neckPanelRef = inject('neckPanelRef');
+let showItemInfo_p = inject('showItemInfo');
+let weaponShow_p = inject('weaponShow');
+let armorShow_p = inject('armorShow');
+let ringShow_p = inject('ringShow');
+let neckShow_p = inject('neckShow');
 
   function createShopItem(lv) {
     var equip = [0.4, 0.342, 0.25, 0.008];
@@ -216,17 +228,13 @@ function refreshShopItems(constraint) {
       // this.createEquip(equipQua,lv)
       var index = Math.floor(Math.random() * 4);
       if (index == 0) {
-        var b = this.findBrothersComponents(this, "weaponPanel", false)[0];
-        var item = b.createNewItem(equipQua, lv);
+        var item = weaponPanelRef(equipQua, lv);
       } else if (index == 1) {
-        var b = this.findBrothersComponents(this, "armorPanel", false)[0];
-        var item = b.createNewItem(equipQua, lv);
+        var item = armorPanelRef(equipQua, lv);
       } else if (index == 2) {
-        var b = this.findBrothersComponents(this, "ringPanel", false)[0];
-        var item = b.createNewItem(equipQua, lv);
+        var item = ringPanelRef(equipQua, lv);
       } else {
-        var b = this.findBrothersComponents(this, "neckPanel", false)[0];
-        var item = b.createNewItem(equipQua, lv);
+        var item = neckPanelRef(equipQua, lv);
       }
       item = JSON.parse(item);
       item.gold = parseInt(item.lv * item.quality.qualityCoefficient * (250 + 20 * item.lv))
@@ -243,8 +251,8 @@ function refreshShopItems(constraint) {
     currentItemIndex.value= k;
     currentItem = grid[k];
     const menuMinWidth = 105;
-    const offsetLeft = this.$el.getBoundingClientRect().left; // container margin left
-    const offsetWidth = this.$el.offsetWidth; // container width
+    const offsetLeft = shopRoot.value.getBoundingClientRect().left; // container margin left
+    const offsetWidth = shopRoot.value.offsetWidth; // container width
     const maxLeft = offsetWidth - menuMinWidth; // left boundary
     var left_tem
     if (e.type == 'touchstart') {
@@ -271,13 +279,11 @@ function refreshShopItems(constraint) {
     if (SchemaIsMobile != 'touch' && store.operatorSchemaIsMobile) {
       return
     }
-    var p = this.findComponentUpward(this, "index");
-    p.showItemInfo($event, type, item);
+    showItemInfo_p($event, type, item);
   }
 
   function closeItemInfo() {
-    var p = this.findComponentUpward(this, "index");
-    p.weaponShow = p.armorShow = p.ringShow = p.neckShow = false;
+    weaponShow_p.value = armorShow_p.value = ringShow_p.value = neckShow_p.value = false;
   }
 
   function buyTheEquipment() {
@@ -294,14 +300,9 @@ function refreshShopItems(constraint) {
     } else {
       store.set_player_gold(-parseInt(currentItem.gold));
 
-      var backpackPanel = this.findBrothersComponents(
-          this,
-          "backpackPanel",
-          false
-      )[0];
-      for (let i = 0; i < backpackPanel.grid.length; i++) {
-        if (JSON.stringify(backpackPanel.grid[i]).length < 3) {
-          backpackPanel.grid[i] = this.currentItem
+      for (let i = 0; i < backpackPanelRef.value.grid.length; i++) {
+        if (JSON.stringify(backpackPanelRef.value.grid[i]).length < 3) {
+          backpackPanelRef.value.grid[i] = currentItem
           break;
         }
       }

@@ -4,7 +4,7 @@
       <button @click="createNewWeapon">随机生成</button>
     </div> -->
     <div class="weaponPanel" :style="{'box-shadow':' 0 0 5px 5px '+weapon.quality.color + 'b8'}"
-         v-if="JSON.stringify(weapon)!='{}'">
+         v-if="JSON.stringify(weapon) != '{}'">
       <div class="title">
         <div class='icon' :class="{'red-flash':weapon.enchantlvl>=13,unique:weapon.quality.name=='独特'}"
              :style="{'box-shadow':'inset 0 0 7px 2px '+weapon.quality.color}">
@@ -73,10 +73,10 @@ watch(() => props.item, () => {
 function createNewItem(qualityIndex, lv) {
   var weapon = {}
   weapon.itemType = 'weapon'
-  weapon.quality = qualityIndex > -1 ? this.quality[qualityIndex] : this.createQua()
-  weapon.lv = lv || this.createLv()
-  weapon.type = this.createType(weapon)
-  weapon.extraEntry = this.createExtraEntry(weapon)
+  weapon.quality = qualityIndex > -1 ? equiAttributeWeapon.quality[qualityIndex] : createQua()
+  weapon.lv = lv || createLv()
+  weapon.type = createType(weapon)
+  weapon.extraEntry = createExtraEntry(weapon)
   return JSON.stringify(weapon)
 }
 
@@ -86,11 +86,11 @@ function createLv(Max) {
 
 function createType(weapon) {
   if (weapon.quality.name == '独特') {
-    var index = Math.floor((Math.random() * uniqueCategory.length));
-    var type = uniqueCategory[index], lv = weapon.lv
+    var index = Math.floor((Math.random() * equiAttributeWeapon.uniqueCategory.length));
+    var type = equiAttributeWeapon.uniqueCategory[index], lv = weapon.lv
   } else {
-    var index = Math.floor((Math.random() * category.length));
-    var type = category[index], lv = weapon.lv
+    var index = Math.floor((Math.random() * equiAttributeWeapon.category.length));
+    var type = equiAttributeWeapon.category[index], lv = weapon.lv
   }
 
   type.entry.map(item => {

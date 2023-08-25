@@ -17,17 +17,18 @@
 </template>
 
 <script setup>
-import {ref, computed} from "vue";
+import {ref, computed, reactive, getCurrentInstance, onMounted} from "vue";
 
 let visible = ref(true)
 let message = ref('')
 let closed = ref(false)
-let onClose = ref(null)
-let onCancle = ref(null)
+let onClose = reactive(null)
+let onCancle = reactive(null)
 let verticalOffset = ref(0)
 let closeBtnText = ref('取消')
 let confirmBtnText = ref('确认')
 let title = ref('提示')
+let proxy = null
 
 let style = computed(() => {
   return {
@@ -35,19 +36,23 @@ let style = computed(() => {
   }
 })
 
+onMounted(()=>{
+  proxy = getCurrentInstance();
+})
+
 function close() {
-  this.visible = false
-  this.closed = true
-  if (typeof this.onCancle === 'function') {
-    this.onCancle(this)
+  visible.value = false
+  closed.value = true
+  if (typeof onCancle === 'function') {
+    onCancle(proxy)
   }
 }
 
 function handleClick() {
-  this.visible = false
-  this.closed = true
-  if (typeof this.onClose === 'function') {
-    this.onClose(this)
+  visible.value = false
+  closed.value = true
+  if (typeof onClose === 'function') {
+    onClose(proxy)
   }
 }
 

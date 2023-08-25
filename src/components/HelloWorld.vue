@@ -14,6 +14,7 @@ defineExpose({
   person
 })
 
+let root = ref(null)
 
 // 更改 message 的值，data是从子组件传过来的
 function changeMessage(data) {
@@ -26,6 +27,8 @@ function changeMsg(data){
 
 onMounted(()=>{
   proxy = getCurrentInstance()
+
+
 })
 
 enum BlockType {
@@ -38,9 +41,9 @@ function deepCopy(data) {
   data = JSON.stringify(data).length > 1 ? data : {}
   return JSON.parse(JSON.stringify(data))
 }
-function showProxy(e){
-  console.log(e)
-  console.log(proxy)
+function showProxy(){
+  console.log(root.value.getBoundingClientRect().left)
+  console.log(root.value.offsetWidth)
 }
 
 function getRandomBlock() {
@@ -59,32 +62,27 @@ for (let i = 0; i < 9; i++) {
   }
 }
 
-/**
- * check if current position is same with left position
- */
-function sameLeft(arr: Array<Array<number>>, x, y, val) {
-
-}
-
 </script>
 
 <template>
-  <!--数据双向绑定-->
-  <h1>{{ msg }}</h1>
-  <h1>{{ person }}</h1>
+  <div ref="root">
+    <!--数据双向绑定-->
+    <h1>{{ (26000).toString().replace(/(\d)(?=(?:\d{3})+$)/g, '$1,') }}
+    </h1>
+  <!--  <h1>{{ person }}</h1>-->
 
-  <div class="card">
-    <button type="button" @click="count++">count is {{ count }}</button>
-    <p>
-      Edit
-      <code>components/HelloWorld.vue</code> to test HMR
-    </p>
-    <button type="button" @changeMsg="showProxy">showProxy</button>
+    <div class="card">
+      <button type="button" @click="count++">count is {{ count }}</button>
+      <p>
+        Edit
+        <code>components/HelloWorld.vue</code> to test HMR
+      </p>
+      <button type="button" @click="showProxy">showProxy</button>
+    </div>
   </div>
-
 </template>
 
-<style scoped>
+<style lang="scss" scoped>
 .read-the-docs {
   color: #888;
 }

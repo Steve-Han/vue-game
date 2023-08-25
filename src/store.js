@@ -386,7 +386,7 @@ export const useStore = defineStore("store", {
                 this.sysInfo.shift()
             }
         },
-        clear_sys_info(data) {
+        clear_sys_info() {
             this.sysInfo.splice(1, this.sysInfo.length)
         },
         set_player_gold(data) {

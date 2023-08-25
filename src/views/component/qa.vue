@@ -28,7 +28,7 @@
 <script setup>
 import getAxiosInstance from '../../assets/js/api.js'
 import {useStore} from '../../store';
-import {ref, reactive, computed, onMounted} from "vue";
+import {ref, reactive, computed, onMounted, inject} from "vue";
 
 const store = useStore()
 
@@ -91,15 +91,16 @@ onMounted(() => {
   getSuggest()
 })
 
+let GMmodel_p = inject('GMmodel');
+
 function eastereEgg1(e) {
   setTimeout(() => {
     reKeyCode = []
   }, 3000)
   reKeyCode.push(e.keyCode)
   if (JSON.stringify(reKeyCode) == JSON.stringify(keyCode)) {
-    var p = this.findComponentUpward(this, 'index')
-    if (!p.GMmodel) {
-      p.GMmodel = true
+    if (!GMmodel_p) {
+      GMmodel_p = true
       store.set_sys_info({
         msg: `
               你发现了彩蛋，想必你也是个游戏热爱者。

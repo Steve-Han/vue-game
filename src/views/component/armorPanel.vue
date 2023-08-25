@@ -71,10 +71,10 @@ watch( () => props.item, () => {
 function createNewItem(qualityIndex, lv) {
   var armor = {}
   armor.itemType = 'armor'
-  armor.quality = qualityIndex > -1 ? equiAttributeArmor.qualityArmor[qualityIndex] : this.createQua()
-  armor.lv = lv || this.createLv()
-  armor.type = this.createType(armor)
-  armor.extraEntry = this.createExtraEntry(armor)
+  armor.quality = qualityIndex > -1 ? equiAttributeArmor.qualityArmor[qualityIndex] : createQua()
+  armor.lv = lv || createLv()
+  armor.type = createType(armor)
+  armor.extraEntry = createExtraEntry(armor)
   return JSON.stringify(armor)
 }
 

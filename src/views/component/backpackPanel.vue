@@ -1,5 +1,5 @@
 <template>
-  <div class="backpackPanel">
+  <div class="backpackPanel" ref="backpackRoot">
     <div v-for="(v, k) in grid" :key="k">
       <div class="grid">
         <div class="title" v-if="v.lv" @contextmenu.prevent="openMenu(k,$event)"
@@ -57,18 +57,19 @@
 <script setup>
 import {useStore} from '../../store.js'
 import handle from "../../assets/js/handle.js";
-import {onMounted, ref, reactive, watch, computed, defineExpose} from "vue";
+import {onMounted, ref, reactive, watch, computed, defineExpose, inject} from "vue";
 
 const store = useStore()
 
 let grid = reactive(new Array(32).fill({}))
-let left = ref('')
-let top = ref('')
+let left = ref(0)
+let top = ref(0)
 let visible = ref(false)
 let currentItem = reactive({})
-let currentItemIndex = ref('')
+let currentItemIndex = ref(0)
 let autoSellPanel = ref(false)
 let autoSell = reactive([false, false, false, false])
+let backpackRoot = ref(null)
 
 //暴露方法给父组件
 defineExpose({
@@ -77,9 +78,9 @@ defineExpose({
 
 watch(visible, (value, oldValue, onCleanup) => {
   if (value) {
-    document.body.addEventListener("click", this.closeMenu);
+    document.body.addEventListener("click", closeMenu);
   } else {
-    document.body.removeEventListener("click", this.closeMenu);
+    document.body.removeEventListener("click", closeMenu);
   }
 })
 
@@ -144,101 +145,108 @@ onMounted(() => {
 
 // 点击span仍然可以设置input的值，操作的是数组，所以需要$set来实现双向绑定
 function setAutoSell(index) {
-  this.$set(this.autoSell, index, !this.autoSell[index])
+  autoSell[index] = !autoSell[index]
 }
 
 // 整理
 function neaten() {
   var tem = new Array(32).fill({}),
       temIndex = 0
-  this.grid.map((item, index) => {
+  grid.map((item, index) => {
     if (JSON.stringify(item) != '{}') {
       tem[temIndex] = item
       temIndex++
     }
   })
-  this.grid = handle.deepCopy(tem)
+  grid = handle.deepCopy(tem)
   tem = []
 }
 
 function clear() {
-  this.grid = new Array(32).fill({});
+  grid = new Array(32).fill({});
 }
 
 // 一键出售
 function sell() {
-  this.grid.map((item, index) => {
+  grid.map((item, index) => {
     if (JSON.stringify(item) != '{}') {
-      this.currentItemIndex = index
-      this.currentItem = item
-      this.sellTheEquipment(true)
+      currentItemIndex.value = index
+      currentItem = item
+      sellTheEquipment(true)
     }
   })
 }
 
 function openMenu(k, e) {
-  this.currentItemIndex = k
-  this.currentItem = this.grid[k]
-  store.set_need_strengthen_equipment(this.currentItem)
+  currentItemIndex.value = k
+  currentItem = grid[k]
+  store.set_need_strengthen_equipment(currentItem)
   const menuMinWidth = 105;
-  const offsetLeft = this.$el.getBoundingClientRect().left; // container margin left
-  const offsetWidth = this.$el.offsetWidth; // container width
+  const offsetLeft = backpackRoot.value.getBoundingClientRect().left; // container margin left
+  const offsetWidth = backpackRoot.value.offsetWidth; // container width
   const maxLeft = offsetWidth - menuMinWidth; // left boundary
+  var left_
   if (e.type == 'touchstart') {
-    var left = e.changedTouches[0].clientX - offsetLeft + 15; // 15: margin right
+    left_ = e.changedTouches[0].clientX - offsetLeft + 15; // 15: margin right
   } else {
-    var left = e.clientX - offsetLeft + 15; // 15: margin right
+    left_ = e.clientX - offsetLeft + 15; // 15: margin right
   }
 
 
-  if (left > maxLeft) {
-    this.left = maxLeft;
+  if (left_ > maxLeft) {
+    left.value = maxLeft;
   } else {
-    this.left = left;
+    left.value = left_;
   }
 
-  this.top = e.offsetY;
-  this.visible = true;
+  top.value = e.offsetY;
+  visible.value = true;
 }
 
 function closeMenu() {
-  this.visible = false;
+  visible.value = false;
 }
+
+let showItemInfo_p = inject('showItemInfo');
+let weaponShow_p = inject('weaponShow');
+let armorShow_p = inject('armorShow');
+let ringShow_p = inject('ringShow');
+let neckShow_p = inject('neckShow');
+let closePanel_p = inject('closePanel');
+let strengthenEquipmentPanelOpened_p = inject('strengthenEquipmentPanelOpened');
 
 function showItemInfo($event, type, item, SchemaIsMobile) {
   if (SchemaIsMobile != 'touch' && store.operatorSchemaIsMobile) {
     return
   }
-  var p = this.findComponentUpward(this, 'index')
-  p.showItemInfo($event, type, item)
+  showItemInfo_p($event, type, item)
 }
 
 function closeItemInfo() {
-  var p = this.findComponentUpward(this, 'index')
-  p.weaponShow = p.armorShow = p.ringShow = p.neckShow = false
+  weaponShow_p.value = armorShow_p.value = ringShow_p.value = neckShow_p.value = false
 }
 
 function lockTheEquipment(v) {
-  this.currentItem.locked = v;
+  currentItem.locked = v;
 }
 
 function equipTheEquipment() {
-  switch (this.currentItem.itemType) {
+  switch (currentItem.itemType) {
     case 'weapon':
-      this.grid[this.currentItemIndex] = store.playerAttribute.weapon
-      store.set_player_weapon(this.currentItem)
+      this.grid[currentItemIndex.value] = store.playerAttribute.weapon
+      store.set_player_weapon(currentItem)
       break;
     case 'armor':
-      this.grid[this.currentItemIndex] = store.playerAttribute.armor
-      store.set_player_armor(this.currentItem)
+      this.grid[currentItemIndex.value] = store.playerAttribute.armor
+      store.set_player_armor(currentItem)
       break;
     case 'ring':
-      this.grid[this.currentItemIndex] = store.playerAttribute.ring
-      store.set_player_ring(this.currentItem)
+      this.grid[currentItemIndex.value] = store.playerAttribute.ring
+      store.set_player_ring(currentItem)
       break;
     case 'neck':
-      this.grid[this.currentItemIndex] = store.playerAttribute.neck
-      store.set_player_neck(this.currentItem)
+      this.grid[currentItemIndex.value] = store.playerAttribute.neck
+      store.set_player_neck(currentItem)
       break;
     default:
       break;
@@ -246,13 +254,12 @@ function equipTheEquipment() {
 }
 
 function strengthenEquipment(v) {
-  var p = this.findComponentUpward(this, 'index')
-  p.closePanel()
-  p.strengthenEquipmentPanelOpened = true
+  closePanel_p()
+  strengthenEquipmentPanelOpened_p.value = true
 }
 
 function sellTheEquipment(withoutWarning, sellMsg) {
-  if (this.currentItem.locked) {
+  if (currentItem.locked) {
 
     !withoutWarning && store.set_sys_info({
       msg: `
@@ -262,8 +269,8 @@ function sellTheEquipment(withoutWarning, sellMsg) {
     });
     return
   }
-  this.$set(this.grid, this.currentItemIndex, {})
-  var gold = this.currentItem.lv * this.currentItem.quality.qualityCoefficient * 30
+  grid[currentItemIndex.value] = {}
+  var gold = currentItem.lv * currentItem.quality.qualityCoefficient * 30
   store.set_player_gold(parseInt(gold))
   store.set_sys_info({
     msg: `

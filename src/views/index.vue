@@ -23,7 +23,7 @@
         <template v-slot:content>
           <div class="hp">
             <img src="../assets/icons/S_Holy01.png" alt="">
-            <div class="value" :style="{fontSize:attribute.MAXHP.value>=100000000?'.20rem':'.26rem'}">
+            <div class="value" :style="{fontSize:attribute.MAXHP.value >= 100000000 ? '.20rem' : '.26rem'}">
               {{ attribute.CURHP.value }}/{{ attribute.MAXHP.value }}
             </div>
           </div>
@@ -35,20 +35,12 @@
 
       </cTooltip>
 
-      <!-- <cTooltip placement="bottom">
-        <template v-slot:content>
-        </template>
-        <template v-slot:tip>
-          <p class="info">* </p>
-        </template>
-      </cTooltip> -->
-
       <div class="other">
         <cTooltip placement="bottom">
           <template v-slot:content>
             <div class="item" title="攻击力">
               <img src="../assets/icons/ATK.png" alt="">
-              <div class="value" :style="{fontSize:attribute.ATK.value>=100000?'.18rem':'.23rem'}">
+              <div class="value" :style="{fontSize:attribute.ATK.value >= 100000 ? '.18rem' : '.23rem'}">
                 {{ attribute.ATK.value }}
               </div>
             </div>
@@ -90,7 +82,7 @@
           <template v-slot:content>
             <div class="item">
               <img src="../assets/icons/icon_11.png" alt="">
-              <div class="value" :style="{fontSize:attribute.DEF.value>=100000?'.18rem':'.23rem'}">
+              <div class="value" :style="{fontSize:attribute.DEF.value >= 100000 ? '.18rem' : '.23rem'}">
                 {{ attribute.DEF.value }} <span
                   style="font-size:.12rem;">({{ ((1 - attribute.REDUCDMG) * 100).toFixed(2) }}%)</span>
               </div>
@@ -123,7 +115,7 @@
           <template v-slot:content>
             <div class="item">
               <img src="../assets/icons/S_BLOC.png" alt="">
-              <div class="value" :style="{fontSize:attribute.BLOC.value>=100000?'.18rem':'.23rem'}">
+              <div class="value" :style="{fontSize:attribute.BLOC.value >= 100000 ? '.18rem' : '.23rem'}">
                 {{ attribute.BLOC.value }}
               </div>
             </div>
@@ -140,8 +132,8 @@
       <div class="uii">
         <cTooltip placement="bottom">
           <template v-slot:content>
-            <div class="gold" v-if="attribute.DPS" :style="{fontSize:attribute.DPS>=10000?'.18rem':'.22rem'}">DPS:
-              <span :style="{fontSize:attribute.DPS>=10000?'.18rem':'.22rem'}">{{ (attribute.DPS).toFixed(2) }}</span>
+            <div class="gold" v-if="attribute.DPS" :style="{fontSize:attribute.DPS >=10000 ? '.18rem' : '.22rem'}">DPS:
+              <span :style="{fontSize:attribute.DPS >= 10000 ? '.18rem' : '.22rem'}">{{ (attribute.DPS).toFixed(2) }}</span>
             </div>
           </template>
           <template v-slot:tip>
@@ -151,8 +143,8 @@
         </cTooltip>
         <cTooltip placement="bottom">
           <template v-slot:content>
-            <div class="gold" :style="{fontSize:userGold>=1000000?'.18rem':'.22rem'}">金币: <span
-                :style="{fontSize:userGold>=1000000?'.14rem':'.16rem'}">{{
+            <div class="gold" :style="{fontSize:userGold >= 1000000 ? '.18rem' : '.22rem'}">金币: <span
+                :style="{fontSize:userGold >= 1000000 ? '.14rem' : '.16rem'}">{{
                 (userGold || 0).toString().replace(/(\d)(?=(?:\d{3})+$)/g, '$1,')
               }}</span>
             </div>
@@ -167,8 +159,8 @@
 
       <div class="weapon" @mouseover="showItemInfo($event,'weapon',playerWeapon,false)" @mouseleave="closeItemInfo">
         <div class="title" v-if="playerWeapon">
-          <div class='icon' :class="{'red-flash':playerWeapon.enchantlvl>=13,unique:playerWeapon.quality.name=='独特'}"
-               :style="{'box-shadow':'inset 0 0 7px 2px '+playerWeapon.quality.color}">
+          <div class='icon' :class="{'red-flash':playerWeapon.enchantlvl >= 13, unique:playerWeapon.quality.name == '独特'}"
+               :style="{'box-shadow':'inset 0 0 7px 2px ' + playerWeapon.quality.color}">
             <img :src="playerWeapon.type.iconSrc" alt="">
           </div>
           <div class='name' :style="{color:playerWeapon.quality.color}">{{ playerWeapon.type.name }}
@@ -176,10 +168,11 @@
           </div>
         </div>
       </div>
+
       <div class="armor" @mouseover="showItemInfo($event,'armor',playerArmor,false)" @mouseleave="closeItemInfo">
         <div class="title" v-if="playerArmor">
-          <div class='icon' :class="{'red-flash':playerArmor.enchantlvl>=13,unique:playerArmor.quality.name=='独特'}"
-               :style="{'box-shadow':'inset 0 0 7px 2px  '+playerArmor.quality.color}">
+          <div class='icon' :class="{'red-flash':playerArmor.enchantlvl >= 13,unique:playerArmor.quality.name == '独特'}"
+               :style="{'box-shadow':'inset 0 0 7px 2px  ' + playerArmor.quality.color}">
             <img :src="playerArmor.type.iconSrc" alt="">
           </div>
           <div class='name' :style="{color:playerArmor.quality.color}">{{ playerArmor.type.name }}
@@ -187,10 +180,11 @@
           </div>
         </div>
       </div>
+
       <div class="neck" @mouseover="showItemInfo($event,'neck',playerNeck,false)" @mouseleave="closeItemInfo">
         <div class="title" v-if="playerNeck">
-          <div class='icon' :class="{'red-flash':playerNeck.enchantlvl>=13,unique:playerNeck.quality.name=='独特'}"
-               :style="{'box-shadow':'inset 0 0 7px 2px '+playerNeck.quality.color}">
+          <div class='icon' :class="{'red-flash':playerNeck.enchantlvl >= 13,unique:playerNeck.quality.name == '独特'}"
+               :style="{'box-shadow':'inset 0 0 7px 2px ' + playerNeck.quality.color}">
             <img :src="playerNeck.type.iconSrc" alt="">
           </div>
           <div class='name' :style="{color:playerNeck.quality.color}">{{ playerNeck.type.name }}
@@ -198,10 +192,11 @@
           </div>
         </div>
       </div>
+
       <div class="ring" @mouseover="showItemInfo($event,'ring',playerRing,false)" @mouseleave="closeItemInfo">
         <div class="title" v-if="playerRing">
-          <div class='icon' :class="{'red-flash':playerRing.enchantlvl>=13,unique:playerRing.quality.name=='独特'}"
-               :style="{'box-shadow':'inset 0 0 7px 2px '+playerRing.quality.color}">
+          <div class='icon' :class="{'red-flash':playerRing.enchantlvl >= 13,unique:playerRing.quality.name == '独特'}"
+               :style="{'box-shadow':'inset 0 0 7px 2px ' + playerRing.quality.color}">
             <img :src="playerRing.type.iconSrc" alt="">
           </div>
           <div class='name' :style="{color:playerRing.quality.color}">{{ playerRing.type.name }}
@@ -210,6 +205,7 @@
         </div>
       </div>
     </div>
+
     <div class="sys-info">
       <div class="clear" @click="clearSysInfo">清除信息</div>
       <div id='sysInfo'>
@@ -217,32 +213,36 @@
              :class="{warning:v.type=='warning',battle:v.type=='battle',win:v.type=='win',trophy:v.type=='trophy',}"
              v-for="(v,k) in sysInfo" :key="k">系统<i style="font-size:.12rem" v-if="v.time">({{ v.time }})</i>：
           <span>{{ v.msg }}</span>
-          <a v-if="v.equip" v-for="(o,p) in v.equip" :key="p" :style="{color:o.quality.color}"
-             @mouseover="showItemInfo($event,o.itemType,o)" @mouseleave="closeItemInfo"><span
-              v-if="o.quality.name=='独特'">稀有掉落：</span>{{ o.type.name }}</a>
+          <a v-if="v.equip" v-for="(o,p) in v.equip" :key="p" :style="{color : o.quality.color}"
+             @mouseover="showItemInfo($event, o.itemType, o)" @mouseleave="closeItemInfo">
+            <span v-if="o.quality.name == '独特'">稀有掉落：</span>
+            {{ o.type.name }}
+          </a>
         </div>
       </div>
     </div>
+
     <div class="map">
       <div class="plan" v-show='inDungeons'>
         <dungeons ref="dungeonsRef"></dungeons>
         <div class="eventEnd button" @click='eventEnd'>结束挑战</div>
       </div>
-      <div class="dungeons-Info" v-if="dungeonsNow&&!inDungeons">
-        <i class="dungeons-re" v-if="dungeonsNow.type=='endless'" @click="resetEndlessLv"></i>
+
+      <div class="dungeons-Info" v-if="dungeonsNow && !inDungeons">
+        <i class="dungeons-re" v-if="dungeonsNow.type == 'endless'" @click="resetEndlessLv"></i>
         <i class="dungeons-close" @click="closeDungeonsInfo"></i>
-        <div class="dungeons-title" v-if="dungeonsNow.type=='endless'">当前副本：无尽</div>
+        <div class="dungeons-title" v-if="dungeonsNow.type == 'endless'">当前副本：无尽</div>
         <div class="dungeons-title" v-else>当前副本：lv{{ dungeonsNow.lv }}_{{ dungeonsNow.difficultyName }}</div>
         <div class="jjj">
-          <div class="dungeons-dps" v-if="dungeonsNow.type=='endless'">推荐DPS：???</div>
+          <div class="dungeons-dps" v-if="dungeonsNow.type == 'endless'">推荐DPS：???</div>
           <div class="dungeons-dps" v-else>推荐DPS：{{ dungeonsNow.needDPS }}</div>
-          <div class="dungeons-lv" v-if="dungeonsNow.type=='endless'">无尽层数:{{ dungeonsNow.lv }}</div>
+          <div class="dungeons-lv" v-if="dungeonsNow.type == 'endless'">无尽层数:{{ dungeonsNow.lv }}</div>
           <div class="dungeons-lv" v-else>副本等级:{{ dungeonsNow.lv }}</div>
         </div>
         <div class="jjj">
           <div class="dungeons-difficulty">当前副本难度等级：{{ dungeonsNow.difficultyName }}</div>
         </div>
-        <div class="info" v-if="dungeonsNow.type=='endless'">
+        <div class="info" v-if="dungeonsNow.type == 'endless'">
           <p>- 无尽难度大致为层数*5的极难副本难度</p>
           <p>- 无尽模式下仅能获得金币，将不会有装备</p>
           <p>- 无尽模式挑战成功会回满血</p>
@@ -254,8 +254,8 @@
           <p>- 困难，极难下有几率出现套装装备(下个版本加入)</p>
         </div>
         <div class="handle">
-          <div v-if="dungeonsNow.type!='endless'">
-            <p v-if="dungeonsNow.difficulty==1"><input type="checkbox" name="" v-model="reChallenge"> 重复挑战</p>
+          <div v-if="dungeonsNow.type != 'endless'">
+            <p v-if="dungeonsNow.difficulty == 1"><input type="checkbox" name="" v-model="reChallenge"> 重复挑战</p>
           </div>
           <div class="handle-column" style="display:flex;flex-direction:column" v-else>
             <p><input type="checkbox" name="" v-model="upEChallenge"> 向上挑战</p>
@@ -264,15 +264,18 @@
           <div class="dungeons-btn" @click="eventBegin()">开始挑战</div>
         </div>
       </div>
-      <div class="event-icon" :class="{'low-level':v.difficulty==1,'h-level':v.difficulty==2,'boss':v.difficulty==3}"
+
+      <div class="event-icon" :class="{'low-level':v.difficulty == 1,'h-level':v.difficulty == 2,'boss':v.difficulty == 3}"
            v-for="(v,k) in dungeonsArr" :key="k" @click="showDungeonsInfo(k)" v-show='!inDungeons'
            :style="{top: v.top,left: v.left}">
         <i class="icon-image"></i>
         <span>lv{{ v.lv }}</span>
       </div>
-      <div class="event-icon endless" v-if="endlessLv&&playerLv>=10" @click="showEndlessDungeonsInfo()"
+
+      <div class="event-icon endless" v-if="endlessLv && playerLv >= 10" @click="showEndlessDungeonsInfo()"
            v-show='!inDungeons' style="top: 6%;left: 16%;"><i class="icon-image"></i><span>无尽</span></div>
     </div>
+
     <div class="menu">
 
       <cTooltip :placement="'top'">
@@ -368,20 +371,22 @@
       </cTooltip>
 
     </div>
+
     <div class="dialog" :style='itemDialogStyle'>
       <weaponPanel :item="weapon" v-show="weaponShow" ref="weaponPanelRef"></weaponPanel>
-      <weaponPanel :item="playerWeapon" v-show="weaponShow&&needComparison" ref="playerWeaponRef"></weaponPanel>
+      <weaponPanel :item="playerWeapon" v-show="weaponShow && needComparison" ref="playerWeaponRef"></weaponPanel>
       <armorPanel :item="armor" v-show="armorShow" ref="armorPanelRef"></armorPanel>
-      <armorPanel :item="playerArmor" v-show="armorShow&&needComparison" ref="playerArmorRef"></armorPanel>
+      <armorPanel :item="playerArmor" v-show="armorShow && needComparison" ref="playerArmorRef"></armorPanel>
       <ringPanel :item="ring" v-show="ringShow" ref="ringPanelRef"></ringPanel>
-      <ringPanel :item="playerRing" v-show="ringShow&&needComparison" ref="playerRingRef"></ringPanel>
+      <ringPanel :item="playerRing" v-show="ringShow && needComparison" ref="playerRingRef"></ringPanel>
       <neckPanel :item="neck" v-show="neckShow" ref="neckPanelRef"></neckPanel>
-      <neckPanel :item="playerNeck" v-show="neckShow&&needComparison" ref="playerNeckRef"></neckPanel>
+      <neckPanel :item="playerNeck" v-show="neckShow && needComparison" ref="playerNeckRef"></neckPanel>
       <div class="item-close" @click="closeItemInfo"
            v-if="(armorShow||ringShow||weaponShow||neckShow)&&needComparison&&operatorSchemaIsMobile">
         关闭对比
       </div>
     </div>
+
     <div class="dialog-backpackPanel" v-show="backpackPanelOpened">
       <div class="title">
         <span>背包</span>
@@ -389,6 +394,7 @@
       </div>
       <backpackPanel ref="backpackPanelRef"></backpackPanel>
     </div>
+
     <div class="dialog-backpackPanel" v-show="shopPanelOpened">
       <div class="title">
         <span>装备商店</span>
@@ -396,6 +402,7 @@
       </div>
       <shopPanel ref="shopPanelRef"></shopPanel>
     </div>
+
     <div class="dialog-backpackPanel" v-if="reinPanelOpened">
       <div class="title">
         <span>角色转生</span>
@@ -403,6 +410,7 @@
       </div>
       <reinPanel></reinPanel>
     </div>
+
     <div class="dialog-backpackPanel" v-show="strengthenEquipmentPanelOpened">
       <div class="title">
         <span>强化装备</span>
@@ -410,6 +418,7 @@
       </div>
       <strengthenEquipment ref="strengthenEquipmentRef"></strengthenEquipment>
     </div>
+
     <div class="dialog-backpackPanel" v-show="exportSaveDataPanelOpened">
       <div class="title">
         <span>导出存档</span>
@@ -421,6 +430,7 @@
         <div class="button" @click="copySavaData">复制文本到剪贴板</div>
       </div>
     </div>
+
     <div class="dialog-backpackPanel" v-show="importSaveDataPanelOpened">
       <div class="title">
         <span>导入存档</span>
@@ -434,6 +444,7 @@
         <div class="button" @click="importSaveData">导入</div>
       </div>
     </div>
+
     <div class="dialog-backpackPanel gm-panel" v-if="GMOpened">
       <div class="title">
         <span>GM面板</span>
@@ -450,6 +461,7 @@
         </div>
       </div>
     </div>
+
     <extras ref="extrasRef"></extras>
     <qa ref="qaRef"></qa>
     <setting ref="settingRef"></setting>
@@ -612,6 +624,12 @@ let operatorSchemaIsMobile = computed(() => {
 })
 
 //向子组件提供数据
+provide("weaponShow", weaponShow)
+provide("armorShow", armorShow)
+provide("ringShow", ringShow)
+provide("neckShow", neckShow)
+provide("closePanel", closePanel)
+provide("strengthenEquipmentPanelOpened", strengthenEquipmentPanelOpened)
 provide("reChallenge", reChallenge)
 provide("eventBegin", eventBegin)
 provide("reEChallenge", reEChallenge)
@@ -626,6 +644,10 @@ provide("weaponPanelRef", weaponPanelRef)
 provide("armorPanelRef", armorPanelRef)
 provide("ringPanelRef", ringPanelRef)
 provide("neckPanelRef", neckPanelRef)
+provide("GMmodel", GMmodel)
+provide("createdDungeons", createdDungeons)
+provide("saveGame", saveGame)
+provide("showItemInfo", showItemInfo)
 
 watch(sysInfo, () => {
   var element = document.getElementById('sysInfo')
@@ -977,7 +999,6 @@ function createGMEquip() {
 }
 
 function showDungeonsInfo(k) {
-  // var b = this.findComponentDownward(this, 'dungeons')
   dungeonsNow = dungeonsArr[k]
   if (dungeonsNow.difficulty != 1) {
     reChallenge.value = false

@@ -289,20 +289,20 @@ function battleCom(event) {
     if (dungeons.type == 'endless') {
       store.set_sys_info({
         msg: `
-              击杀了${event.name}(无尽层数：${this.dungeons.lv})，受到了${Math.abs(takeDmg)}点伤害
+              击杀了${event.name}(无尽层数：${dungeons.lv})，受到了${Math.abs(takeDmg)}点伤害
             `,
         type: 'win'
       });
     } else {
       store.set_sys_info({
         msg: `
-              击杀了${event.name}(lv${this.dungeons.lv})，受到了${Math.abs(takeDmg)}点伤害
+              击杀了${event.name}(lv${dungeons.lv})，受到了${Math.abs(takeDmg)}点伤害
             `,
         type: 'win'
       });
     }
     // 计算战利品获取
-    this.caculateTrophy(event)
+    caculateTrophy(event)
     // 副本战斗成功时提升玩家等级
     if (dungeons.lv > store.playerAttribute.lv && event.type == 'boss') {
       store.set_sys_info({

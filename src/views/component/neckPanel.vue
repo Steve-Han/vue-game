@@ -74,10 +74,10 @@ watch(() => props.item, (value, oldValue, onCleanup) => {
 function createNewItem(qualityIndex, lv) {
   var neck = {}
   neck.itemType = 'neck'
-  neck.quality = qualityIndex > -1 ? qualityNeck[qualityIndex] : this.createQua()
-  neck.lv = lv || this.createLv()
-  neck.type = this.createType(neck)
-  neck.extraEntry = this.createExtraEntry(neck)
+  neck.quality = qualityIndex > -1 ? equiAttributeNeck.qualityNeck[qualityIndex] : createQua()
+  neck.lv = lv || createLv()
+  neck.type = createType(neck)
+  neck.extraEntry = createExtraEntry(neck)
   return JSON.stringify(neck)
 }
 
@@ -87,11 +87,11 @@ function createLv(Max) {
 
 function createType(neck) {
   if (neck.quality.name == '独特') {
-    var index = Math.floor((Math.random() * uniqueCategoryNeck.length));
-    var type = uniqueCategoryNeck[index], lv = neck.lv
+    var index = Math.floor((Math.random() * equiAttributeNeck.uniqueCategoryNeck.length));
+    var type = equiAttributeNeck.uniqueCategoryNeck[index], lv = neck.lv
   } else {
-    var index = Math.floor((Math.random() * categoryNeck.length));
-    var type = categoryNeck[index], lv = neck.lv
+    var index = Math.floor((Math.random() * equiAttributeNeck.categoryNeck.length));
+    var type = equiAttributeNeck.categoryNeck[index], lv = neck.lv
   }
   type.entry.map(item => {
     switch (item.type) {
@@ -148,16 +148,16 @@ function createQua() {
   var a = qualityProbability[index], b = qualityProbability, qualityRes
   switch (a) {
     case b[0]:
-      qualityRes = quality[0]
+      qualityRes = equiAttributeNeck.quality[0]
       break;
     case b[1]:
-      qualityRes = quality[1]
+      qualityRes = equiAttributeNeck.quality[1]
       break;
     case b[2]:
-      qualityRes = quality[2]
+      qualityRes = equiAttributeNeck.quality[2]
       break;
     case b[3]:
-      qualityRes = quality[3]
+      qualityRes = equiAttributeNeck.quality[3]
       break;
     default:
       break;
@@ -168,8 +168,8 @@ function createQua() {
 function createExtraEntry(neck) {
   var n = neck.quality.extraEntryNum, extraEntryRes = [], lv = neck.lv
   for (let i = 0; i < n; i++) {
-    var index = Math.floor((Math.random() * extraEntryNeck.length));
-    extraEntryRes.push(extraEntryNeck[index])
+    var index = Math.floor((Math.random() * equiAttributeNeck.extraEntryNeck.length));
+    extraEntryRes.push(equiAttributeNeck.extraEntryNeck[index])
   }
   var b = handle.deepCopy(extraEntryRes)
   b.map(item => {

@@ -74,10 +74,10 @@ watch(() => props.item, () => {
 function createNewItem(qualityIndex, lv) {
   var ring = {}
   ring.itemType = 'ring'
-  ring.quality = qualityIndex > -1 ? this.quality[qualityIndex] : this.createQua()
-  ring.lv = lv || this.createLv()
-  ring.type = this.createType(ring)
-  ring.extraEntry = this.createExtraEntry(ring)
+  ring.quality = qualityIndex > -1 ? equiAttributeRing.quality[qualityIndex] : createQua()
+  ring.lv = lv || createLv()
+  ring.type = createType(ring)
+  ring.extraEntry = createExtraEntry(ring)
   return JSON.stringify(ring)
 }
 
@@ -87,11 +87,11 @@ function createLv(Max) {
 
 function createType(ring) {
   if (ring.quality.name == '独特') {
-    var index = Math.floor((Math.random() * this.uniqueCategory.length));
-    var type = this.uniqueCategory[index], lv = ring.lv
+    var index = Math.floor((Math.random() * equiAttributeRing.uniqueCategory.length));
+    var type = equiAttributeRing.uniqueCategory[index], lv = ring.lv
   } else {
-    var index = Math.floor((Math.random() * this.category.length));
-    var type = this.category[index], lv = ring.lv
+    var index = Math.floor((Math.random() * equiAttributeRing.category.length));
+    var type = equiAttributeRing.category[index], lv = ring.lv
   }
   type.entry.map(item => {
     switch (item.type) {
@@ -160,8 +160,8 @@ function createQua() {
 function createExtraEntry(ring) {
   var n = ring.quality.extraEntryNum, extraEntryRes = [], lv = ring.lv
   for (let i = 0; i < n; i++) {
-    var index = Math.floor((Math.random() * extraEntry.length));
-    extraEntryRes.push(extraEntry[index])
+    var index = Math.floor((Math.random() * equiAttributeRing.extraEntry.length));
+    extraEntryRes.push(equiAttributeRing.extraEntry[index])
   }
   var b = handle.deepCopy(extraEntryRes)
   b.map(item => {

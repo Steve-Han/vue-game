@@ -37,7 +37,7 @@
 </template>
 <script setup>
 import {useStore} from '../../store'
-import {ref, reactive, computed, onMounted} from "vue";
+import {ref, reactive, computed, onMounted, inject} from "vue";
 import S_HOLY01_PNG from '../../assets/icons/S_Holy01.png'
 import ATK_PNG  from '../../assets/icons/ATK.png'
 import CRIT_PNG  from '../../assets/icons/CRIT.png'
@@ -235,13 +235,14 @@ function reincarnationConfirm() {
   })
 }
 
+let backpackPanelRef = inject('backpackPanelRef');
+let createdDungeons_p = inject('createdDungeons');
+
 function clearPlayerInfo() {
   store.reset_player_gold(0)
-  store.reset_player_equi({})
-  var backpackPanel = this.findBrothersComponents(this, 'backpackPanel', false)[0]
-  backpackPanel.clear()
-  var p = this.findComponentUpward(this, 'index')
-  p.createdDungeons(true)
+  store.reset_player_equi()
+  backpackPanelRef.clear()
+  createdDungeons_p(true)
 }
 
 function caculateWillGetreincarnationPoint() {
@@ -295,7 +296,7 @@ function subtract(v, e) {
     count: reinCount.value,
     point: reincarnationPoint.value
   })
-  this.caculateAttr()
+  caculateAttr()
 }
 
 function subtractDown(v, e) {
@@ -320,7 +321,7 @@ function addDown(v, e) {
   addTimer1.value = setTimeout(() => {
     flag = true;
     addTimer2.value = setInterval(() => {
-      this.add(v, e)
+      add(v, e)
     }, 50)
   }, 500);
 }
@@ -354,7 +355,7 @@ function add(v, e) {
     count: reinCount.value,
     point: reincarnationPoint.value
   })
-  this.caculateAttr()
+  caculateAttr()
 }
 
 function caculateAttr() {

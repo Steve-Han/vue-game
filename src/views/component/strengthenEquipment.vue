@@ -91,7 +91,7 @@
 import cTooltip from '../uiComponent/tooltip.vue'
 import handle from '../../assets/js/handle';
 import {useStore} from '../../store'
-import {ref, reactive, defineProps, watch, onMounted, computed, defineExpose} from "vue";
+import {ref, reactive, defineProps, watch, onMounted, computed, defineExpose, inject} from "vue";
 
 const store = useStore()
 
@@ -188,7 +188,7 @@ function startStreng(auto) {
   var ra = auto ? 2 : 1
   var needGold = strengthenNeedGold * 1  //ra
   if (store.playerAttribute.GOLD < needGold) {
-    this.stopAutoStreng()
+    stopAutoStreng()
     store.set_sys_info({
       msg: `
               钱不够啊，强化啥呢。
@@ -225,16 +225,16 @@ function startStreng(auto) {
 
   store.set_player_gold(-parseInt(needGold));
 
-  this.changeTheEquimentByLv(lv)
-  this.changeTheEquiment()
+  changeTheEquimentByLv(lv)
+  changeTheEquiment()
 }
 
 function startAutoStreng() {
   autoStrengModel.value = true
   autoStrengTime.value = setInterval(() => {
-    this.startStreng(true)
+    startStreng(true)
     if (equiment.enchantlvl == autoStrengLv.value) {
-      this.stopAutoStreng()
+      stopAutoStreng()
       store.set_sys_info({
         msg: `
               自动强化完成了，去看看你的装备吧。
@@ -276,7 +276,7 @@ function recastTheEquiment(v, k) {
   } else {
     qualityClass.value = 'S'
   }
-  this.changeTheEquiment()
+  changeTheEquiment()
 }
 
 //根据强化等级变动装备
@@ -284,13 +284,14 @@ function changeTheEquimentByLv(lv) {
   equiment.enchantlvl = lv
 }
 
+let backpackPanelRef = inject('backpackPanelRef');
+let saveGame_p = inject('saveGame');
+
 //修改成功时保存这个装备
 function changeTheEquiment() {
-  var backpackPanel = this.findBrothersComponents(this, 'backpackPanel', false)[0]
-  var index = this.findComponentUpward(this, 'index')
-  index.saveGame(false)
+  saveGame_p(false)
   equiment.locked = true;
-  backpackPanel.grid[backpackPanel.currentItemIndex] = handle.deepCopy(equiment)
+  backpackPanelRef.value.grid[backpackPanelRef.value.currentItemIndex.value] = handle.deepCopy(equiment)
 }
 
 </script>
