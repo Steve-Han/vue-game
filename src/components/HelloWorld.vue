@@ -35,7 +35,7 @@ function showProxy(e) {
 
 
 function showProxy1(e) {
-
+  console.log('showProxy1')
 }
 
 let root = ref(null)
