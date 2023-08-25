@@ -27,7 +27,7 @@ let battleComTime = ref(0)
 let nextEvent = ref(1)
 let battleTime = ref(2000)
 let moveTime = ref(50)
-let dungeons = reactive({
+let dungeons = ref({
   battleTime: 2000,
   name: '史莱姆森林',
   time: '60',
@@ -114,10 +114,10 @@ defineExpose({
 
 function evenHandle() {
   let startEnent = () => {
-    if (left.value >= nextEvent.value * 100 / dungeons.eventNum) {
+    if (left.value >= nextEvent.value * 100 / dungeons.value.eventNum) {
       evenInExecution()
       nextEvent.value++
-      if (nextEvent.value <= dungeons.eventNum) {
+      if (nextEvent.value <= dungeons.value.eventNum) {
         timeOut.value = setTimeout(() => {
           pro.value = setInterval(() => {
             startEnent()
@@ -142,10 +142,10 @@ function evenHandle() {
 
 function eventBegin() {
   store.set_sys_info({
-    msg: "你已进入" + (dungeons.type == "endless" ? '无尽（lv' + dungeons.lv + '）' : dungeons.name),
+    msg: "你已进入" + (dungeons.value.type == "endless" ? '无尽（lv' + dungeons.value.lv + '）' : dungeons.value.name),
     type: 'warning'
   });
-  if (dungeons.name == '黑色火山') {
+  if (dungeons.value.name == '黑色火山') {
     store.set_sys_info({
       msg: "似乎这就是最后的挑战了",
       type: 'battle'
@@ -158,12 +158,12 @@ function eventBegin() {
 }
 
 function evenInExecution() {
-  var event = dungeons.eventType[nextEvent.value - 1]
+  var event = dungeons.value.eventType[nextEvent.value - 1]
   switch (event.eventType) {
     case 'battle':
       store.set_sys_info({
         msg: `
-              你遭遇了${event.name}(lv${dungeons.lv}),正在战斗中...
+              你遭遇了${event.name}(lv${dungeons.value.lv}),正在战斗中...
             `,
         type: 'battle'
       });
@@ -185,7 +185,7 @@ function forcedToStopEvent() {
   pro.value = 0
   left.value = 0
   nextEvent.value = 1
-  dungeons = {}
+  dungeons.value = {}
 }
 
 
@@ -207,7 +207,7 @@ let neckPanelRef = inject('neckPanelRef');
 function eventEnd() {
   setTimeout(() => {
     // this.battleCom(event)
-    if (dungeons.type == "endless") {
+    if (dungeons.value.type == "endless") {
       store.set_sys_info({
         msg: `
                 挑战成功，可以挑战下一层了
@@ -225,7 +225,7 @@ function eventEnd() {
       });
     }
 
-    if (dungeons.name == '黑色火山' && !store.playerAttribute.endlessLv) {
+    if (dungeons.value.name == '黑色火山' && !store.playerAttribute.endlessLv) {
 
       store.set_sys_info({
         msg: "击败了最后的boss，你通关了！",
@@ -233,7 +233,7 @@ function eventEnd() {
       });
     }
 
-    if (dungeons.lv >= 10 && !store.playerAttribute.endlessLv) {
+    if (dungeons.value.lv >= 10 && !store.playerAttribute.endlessLv) {
       store.set_sys_info({
         msg: "开启了无尽挑战，可点击地图右上角副本图标进入",
         type: 'warning'
@@ -248,16 +248,16 @@ function eventEnd() {
     let backpackPanelSign = backpackPanelRef.value.itemNum / backpackPanelRef.value.grid.length < 0.8
     if (reChallenge_p && backpackPanelSign) {
       eventBegin_p()
-    } else if (reEChallenge_p && dungeons_p.type == 'endless') {
+    } else if (reEChallenge_p && dungeons_p.value.type == 'endless') {
       store.set_endless_lv(store.playerAttribute.endlessLv - 1);
       eventBegin_p()
-    } else if (upEChallenge_p && dungeons_p.type == 'endless') {
+    } else if (upEChallenge_p && dungeons_p.value.type == 'endless') {
       endlessLv_p.value = store.playerAttribute.endlessLv
-      dungeons_p.lv = store.playerAttribute.endlessLv
+      dungeons_p.value.lv = store.playerAttribute.endlessLv
       showEndlessDungeonsInfo_p()
       eventBegin_p()
     } else {
-      dungeons_p = {}
+      dungeons_p.value = {}
       inDungeons_p.value = false
     }
 
@@ -286,17 +286,17 @@ function battleCom(event) {
     takeDmg = takeDmg > -1 ? -1 : takeDmg
     store.set_player_curhp(takeDmg)
 
-    if (dungeons.type == 'endless') {
+    if (dungeons.value.type == 'endless') {
       store.set_sys_info({
         msg: `
-              击杀了${event.name}(无尽层数：${dungeons.lv})，受到了${Math.abs(takeDmg)}点伤害
+              击杀了${event.name}(无尽层数：${dungeons.value.lv})，受到了${Math.abs(takeDmg)}点伤害
             `,
         type: 'win'
       });
     } else {
       store.set_sys_info({
         msg: `
-              击杀了${event.name}(lv${dungeons.lv})，受到了${Math.abs(takeDmg)}点伤害
+              击杀了${event.name}(lv${dungeons.value.lv})，受到了${Math.abs(takeDmg)}点伤害
             `,
         type: 'win'
       });
@@ -304,18 +304,18 @@ function battleCom(event) {
     // 计算战利品获取
     caculateTrophy(event)
     // 副本战斗成功时提升玩家等级
-    if (dungeons.lv > store.playerAttribute.lv && event.type == 'boss') {
+    if (dungeons.value.lv > store.playerAttribute.lv && event.type == 'boss') {
       store.set_sys_info({
         msg: `
               你升级了，可以刷新出更高等级的副本了。
             `,
         type: 'win'
       });
-      store.set_player_lv(dungeons.lv)
+      store.set_player_lv(dungeons.value.lv)
     }
     // 高难度副本只可以挑战一次
-    if (dungeons.difficulty != 1) {
-      dungeonsArr_p = dungeonsArr_p.filter(({id}) => id !== dungeons.id);
+    if (dungeons.value.difficulty != 1) {
+      dungeonsArr_p = dungeonsArr_p.filter(({id}) => id !== dungeons.value.id);
     }
   } else {
     // 玩家死亡
@@ -327,7 +327,7 @@ function battleCom(event) {
     left.value = 0
     nextEvent.value = 1
     inDungeons_p.value = false
-    dungeons = {}
+    dungeons.value = {}
     var takeDmg = monsterDeadTime * Number(monsterAttribute.ATK)
     takeDmg = parseInt(takeDmg * reducedDamage)
     takeDmg = takeDmg - playerBLOC
@@ -350,10 +350,10 @@ function battleCom(event) {
 //战利品计算
 function caculateTrophy(event) {
   var items = []
-  var lv = dungeons.lv
+  var lv = dungeons.value.lv
   // 获取独特装备
-  if (event.type == 'boss' && dungeons.type != 'endless') {
-    var randow = 1 - 0.02 * ((dungeons.difficulty - 1) * 2 + 1)
+  if (event.type == 'boss' && dungeons.value.type != 'endless') {
+    var randow = 1 - 0.02 * ((dungeons.value.difficulty - 1) * 2 + 1)
     if (Math.random() > randow) {
       var random = Math.random()
       if (random <= 0.3 && random > 0) {
@@ -407,7 +407,7 @@ function caculateTrophy(event) {
     }
     items.push(JSON.parse(item))
     var goldObtainRatio = 1
-    if (dungeons.type == 'endless') {
+    if (dungeons.value.type == 'endless') {
       var endlessLv = store.playerAttribute.endlessLv
       goldObtainRatio = 1.5
       items = []
@@ -420,7 +420,7 @@ function caculateTrophy(event) {
       equip: items
     });
     store.set_player_gold(parseInt(event.trophy.gold * goldObtainRatio));
-    if (dungeons.type == 'endless') {
+    if (dungeons.value.type == 'endless') {
       return
     }
     items.map(item => {
@@ -446,7 +446,7 @@ function caculateTrophy(event) {
   } else {
     //金币获取倍率
     var goldObtainRatio = 1
-    if (dungeons.type == 'endless') {
+    if (dungeons.value.type == 'endless') {
       var endlessLv = store.playerAttribute.endlessLv
       goldObtainRatio = 2.6
     }

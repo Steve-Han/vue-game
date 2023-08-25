@@ -519,7 +519,7 @@ let inDungeons = ref(false)  //是否在副本进程中
 let reChallenge = ref(false)
 let upEChallenge = ref(false)
 let reEChallenge = ref(false)
-let dungeonsNow = reactive({})
+let dungeonsNow = ref({})
 let dungeonsArr = reactive([])
 let dungeonsTime = ref(0) //刷新副本计时器)
 let dungeonsTimeO = ref(30) //刷新副本时间间隔 单位：S
@@ -999,25 +999,25 @@ function createGMEquip() {
 }
 
 function showDungeonsInfo(k) {
-  dungeonsNow = dungeonsArr[k]
-  if (dungeonsNow.difficulty != 1) {
+  dungeonsNow.value = dungeonsArr[k]
+  if (dungeonsNow.value.difficulty != 1) {
     reChallenge.value = false
   }
 }
 
 function showEndlessDungeonsInfo() {
   reChallenge.value = false
-  dungeonsNow = handle.createRandomDungeons(store.playerAttribute.endlessLv * 5, 3)
-  dungeonsNow.lv = store.playerAttribute.endlessLv
-  dungeonsNow.type = 'endless'
+  dungeonsNow.value = handle.createRandomDungeons(store.playerAttribute.endlessLv * 5, 3)
+  dungeonsNow.value.lv = store.playerAttribute.endlessLv
+  dungeonsNow.value.type = 'endless'
 }
 
 function closeDungeonsInfo() {
-  dungeonsNow = {}
+  dungeonsNow.value = {}
 }
 
 function eventBegin() {
-  dungeonsRef.value.dungeons = dungeonsNow
+  dungeonsRef.value.dungeons.value = dungeonsNow.value
   dungeonsRef.value.evenHandle()
 
   inDungeons.value = true
@@ -1025,7 +1025,7 @@ function eventBegin() {
 
 function eventEnd() {
   inDungeons.value = false;
-  dungeonsNow = {}
+  dungeonsNow.value = {}
 
   dungeonsRef.value.forcedToStopEvent()
 
