@@ -149,16 +149,16 @@ let item = computed(() => {
   return store.needStrengthenEquipment
 })
 let strengthenNeedGold = computed(() => {
-  var a = parseInt((parseInt(this.equiment.lv) + 1) * (1.1 ** (this.equiment.enchantlvl) ** 1.1) * (10 + parseInt(this.equiment.lv) / 5)) + 100
+  var a = parseInt((parseInt(equiment.lv) + 1) * (1.1 ** (equiment.enchantlvl) ** 1.1) * (10 + parseInt(equiment.lv) / 5)) + 100
   return a
 })
 let recastNeedGold = computed(() => {
-  var a = parseInt(parseInt(this.equiment.lv) * this.equiment.quality.qualityCoefficient * (200 + 10 * parseInt(this.equiment.lv)) / 4)
+  var a = parseInt(parseInt(equiment.lv) * equiment.quality.qualityCoefficient * (200 + 10 * parseInt(equiment.lv)) / 4)
   return a
 })
 
 watch(item, (value, oldValue, onCleanup) => {
-  equiment = handle.deepCopy(this.item)
+  equiment = handle.deepCopy(item)
   if (!equiment.enchantlvl) {
     equiment['enchantlvl'] = 0
   }
@@ -176,7 +176,7 @@ function startStreng(auto) {
   if (strengTime.value && equiment.enchantlvl >= 12) {
     store.set_sys_info({
       msg: `
-          刷新页面时需要等待60S才能强化+12以上，仍需等待${this.strengTimeO}秒。
+          刷新页面时需要等待60S才能强化+12以上，仍需等待${strengTimeO.value}秒。
         `,
       type: 'wrning'
     });
@@ -186,7 +186,7 @@ function startStreng(auto) {
   }
   // 自动强化需要金币倍率
   var ra = auto ? 2 : 1
-  var needGold = strengthenNeedGold * 1  //ra
+  var needGold = strengthenNeedGold.value * 1  //ra
   if (store.playerAttribute.GOLD < needGold) {
     stopAutoStreng()
     store.set_sys_info({
@@ -252,7 +252,7 @@ function stopAutoStreng() {
 
 // 重铸装备
 function recastTheEquiment(v, k) {
-  if (store.playerAttribute.GOLD < recastNeedGold) {
+  if (store.playerAttribute.GOLD < recastNeedGold.value) {
     store.set_sys_info({
       msg: `
               钱不够啊，重铸啥呢。
@@ -263,7 +263,7 @@ function recastTheEquiment(v, k) {
   }
   let newEntry = handle.createRandomEntry(equiment.lv, equiment.quality.qualityCoefficient)
   equiment.extraEntry[k] = newEntry
-  store.set_player_gold(-parseInt(recastNeedGold));
+  store.set_player_gold(-parseInt(recastNeedGold.value));
   var a = parseInt(equiment.extraEntry[k].EntryLevel)
   if (a < 25) {
     qualityClass.value = 'D'
