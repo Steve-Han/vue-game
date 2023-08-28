@@ -3,7 +3,7 @@
  * @author couy
  */
 
-export default function equiAttributeWeapon () {
+export default function () {
     return {
         quality: [{
             name: '破旧',

@@ -3,7 +3,7 @@
  * @author couy
  */
 
-export default function equiAttributeNeck() {
+export default function() {
     return {
         qualityNeck: [{
             name: '破旧',

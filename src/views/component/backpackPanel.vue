@@ -74,7 +74,8 @@ let item;
 
 //暴露方法给父组件
 defineExpose({
-  grid
+  grid,
+  autoSell
 })
 
 watch(visible, (value, oldValue, onCleanup) => {

@@ -45,16 +45,17 @@
   </div>
 </template>
 <script setup>
-import equiAttributeWeapon from '../../assets/config/equiAttributeWeapon'
+import equiAttributeWeapon_ from '../../assets/config/equiAttributeWeapon'
 import handle from "../../assets/js/handle.js";
 import {useStore} from '../../store'
 import {ref, reactive, defineProps, watch, onMounted, computed} from "vue";
+import equiAttributeArmor from "../../assets/config/equiAttributeArmor.js";
 
 const store = useStore()
 
 let weapon = reactive({})
 let qualityProbability = reactive([0.25, 0.55, 0.15, 0.05,])
-
+let equiAttributeWeapon = equiAttributeWeapon_();
 //接收父组件 传过来的值！
 const props = defineProps({
   item: {
@@ -168,7 +169,7 @@ function createExtraEntry(weapon) {
   var n = weapon.quality.extraEntryNum, extraEntry = [], lv = weapon.lv
   for (let i = 0; i < n; i++) {
     var index = Math.floor((Math.random() * extraEntry.length));
-    extraEntry.push(extraEntry[index])
+    extraEntry.push(equiAttributeWeapon.extraEntry[index])
   }
   var b = handle.deepCopy(extraEntry)
   b.map(item => {

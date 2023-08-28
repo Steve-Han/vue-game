@@ -595,7 +595,7 @@ document.addEventListener("visibilitychange", e => {
 onMounted(() => {
   // 自动回血
   autoHealthRecovery.value = setInterval(() => {
-    store.set_player_curhp(healthRecoverySpeed * (attribute.value.MAXHP.value / 50))
+    store.set_player_curhp(healthRecoverySpeed.value * (attribute.value.MAXHP.value / 50))
   }, 1000)
 
 

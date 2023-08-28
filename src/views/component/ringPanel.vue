@@ -46,16 +46,17 @@
   </div>
 </template>
 <script setup>
-import equiAttributeRing from '../../assets/config/equiAttributeRing'
+import equiAttributeRing_ from '../../assets/config/equiAttributeRing'
 import handle from "../../assets/js/handle.js";
 import {useStore} from '../../store'
 import {ref, reactive, defineProps, watch} from "vue";
+import equiAttributeWeapon from "../../assets/config/equiAttributeWeapon.js";
 
 const store = useStore()
 
 let ring = reactive({})
 let qualityProbability = reactive([0.25, 0.55, 0.15, 0.05,])
-
+let equiAttributeRing = equiAttributeRing_()
 //接收父组件 传过来的值！
 const props = defineProps({
   item: {

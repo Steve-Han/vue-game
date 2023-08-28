@@ -3,7 +3,7 @@
  * @author couy
  */
 
-export default function equiAttributeRing() {
+export default function() {
     return {
         quality: [{
             name: '破旧',

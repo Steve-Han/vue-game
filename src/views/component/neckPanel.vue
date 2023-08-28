@@ -46,7 +46,7 @@
   </div>
 </template>
 <script setup>
-import equiAttributeNeck from '../../assets/config/equiAttributeNeck'
+import equiAttributeNeck_ from '../../assets/config/equiAttributeNeck'
 import handle from "../../assets/js/handle.js";
 import {useStore} from '../../store'
 import {ref, reactive, computed, onMounted, watch, defineProps} from "vue";
@@ -55,7 +55,7 @@ const store = useStore()
 
 let neck = reactive({})
 let qualityProbability = reactive([0.25, 0.55, 0.15, 0.05,])
-
+let equiAttributeNeck = equiAttributeNeck_();
 //接收父组件 传过来的值！
 const props = defineProps({
   item: {

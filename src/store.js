@@ -1,5 +1,6 @@
 import {defineStore} from 'pinia'
 import handle from './assets/js/handle'
+import {isNumber} from "lodash";
 
 var initial_weapon = {
         "lv": 1,
@@ -422,7 +423,7 @@ export const useStore = defineStore("store", {
                 CURHP.value = 1
             } else if (data == 'full') {
                 CURHP.value = MAXHP.value
-            } else {
+            } else if (isNumber(data)) {
                 CURHP.value += Number(data);
                 CURHP.value = parseInt(CURHP.value)
                 if (CURHP.value > MAXHP.value) {

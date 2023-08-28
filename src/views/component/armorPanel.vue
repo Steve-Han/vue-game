@@ -46,12 +46,13 @@
   </div>
 </template>
 <script setup name="armorPanel">
-import equiAttributeArmor from '../../assets/config/equiAttributeArmor'
+import equiAttributeArmor_ from '../../assets/config/equiAttributeArmor'
 import handle from "../../assets/js/handle.js";
 import {reactive, watch, watchEffect, defineProps} from "vue";
 
 let armor = reactive({})
 let qualityProbability = reactive([0.25, 0.55, 0.15, 0.05,])
+let equiAttributeArmor = equiAttributeArmor_();
 
 //接收父组件 传过来的值！
 const props = defineProps({
