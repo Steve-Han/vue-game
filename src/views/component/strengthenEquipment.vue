@@ -91,7 +91,7 @@
 import cTooltip from '../uiComponent/tooltip.vue'
 import handle from '../../assets/js/handle';
 import {useStore} from '../../store'
-import {ref, reactive, defineProps, watch, onMounted, computed, defineExpose, inject} from "vue";
+import {ref, reactive, watch, onMounted, computed, defineExpose, inject} from "vue";
 
 const store = useStore()
 
@@ -158,7 +158,7 @@ let recastNeedGold = computed(() => {
 })
 
 watch(item, (value, oldValue, onCleanup) => {
-  equiment = handle.deepCopy(item)
+  handle.setReactive(equiment, handle.deepCopy(item))
   if (!equiment.enchantlvl) {
     equiment['enchantlvl'] = 0
   }
