@@ -1,7 +1,6 @@
 <script setup lang="ts">
-import {ref, getCurrentInstance, onMounted, reactive, toRaw, defineExpose} from 'vue'
+import {ref, getCurrentInstance, onMounted, reactive, toRaw} from 'vue'
 import {eachRight, random} from "lodash"
-import * as stream from "stream";
 
 defineProps<{ msg: string }>()
 
@@ -13,10 +12,7 @@ let person = ref({
 
 let stu = reactive({
   name: '哈哈',
-  age: 123,
-  show: () => {
-    console.log(this.name)
-  }
+  age: 123
 })
 
 let grid = reactive(new Array(32).fill({}))
@@ -28,7 +24,7 @@ defineExpose({
 function showProxy(e) {
 
   //先清空stu的属性
-  clear(stu)
+  //clear(stu)
   //再设置
   Object.assign(stu, {'trick': 'joke'})
 }
@@ -70,10 +66,15 @@ for (let i = 0; i < 9; i++) {
   }
 }
 
+function contextmenu(event) {
+  let number = parseInt(123);
+  console.log(number)
+}
+
 </script>
 
 <template>
-  <div ref="root">
+  <div ref="root" @contextmenu.prevent="contextmenu"> <!--阻止右键的默认行为-->
     <!--数据双向绑定-->
     <span>{{ stu }}</span>
 

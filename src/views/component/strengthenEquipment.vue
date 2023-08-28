@@ -96,11 +96,11 @@ import {ref, reactive, defineProps, watch, onMounted, computed, defineExpose, in
 const store = useStore()
 
 let equiment = reactive({})
-let strengTime = ref(0) //刷新副本计时器
+let strengTime = ref(null) //刷新副本计时器
 let strengTimeO = ref(60) //刷新副本时间间隔 单位：S
 let autoStrengModel = ref(false)
 let autoStrengLv = ref(12)
-let autoStrengTime = ref(0)
+let autoStrengTime = ref(null)
 let recast = ref(false)
 let qualityClass = ref('')
 let qualityProbability = reactive([0.25, 0.55, 0.15, 0.05,])

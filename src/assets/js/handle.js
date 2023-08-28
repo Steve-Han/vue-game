@@ -1,5 +1,5 @@
 function deepCopy(data) {
-    data = JSON.stringify(data).length > 1 ? data : {}
+    data = (JSON.stringify(data) && JSON.stringify(data).length) > 1 ? data : {}
     return JSON.parse(JSON.stringify(data))
 }
 

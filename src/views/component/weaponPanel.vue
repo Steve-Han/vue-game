@@ -66,7 +66,7 @@ defineExpose({
   createNewItem
 })
 
-watch(() => props.item, () => {
+watch(() => props.item, (value) => {
   handle.setReactive(weapon, handle.deepCopy(props.item))
 })
 

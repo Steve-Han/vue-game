@@ -51,10 +51,10 @@ const store = useStore()
 let reincarnationPoint = ref(100)
 let reinCount = ref(0)
 let willGetreincarnationPoint = ref(0)
-let subtractTimer1 = ref(0)
-let subtractTimer2 = ref(0)
-let addTimer1 = ref(0)
-let addTimer2 = ref(0)
+let subtractTimer1 = ref(null)
+let subtractTimer2 = ref(null)
+let addTimer1 = ref(null)
+let addTimer2 = ref(null)
 let attr = reactive([
   {
     name: 'HP',

@@ -484,7 +484,7 @@ import qa from './component/qa.vue'
 import {Base64} from 'js-base64'
 import handle from '../assets/js/handle'
 import {useStore} from '../store'
-import {ref, reactive, watch, onMounted, computed, provide} from "vue"
+import {ref, reactive, watch, onMounted, computed, provide, nextTick} from "vue"
 
 const store = useStore()
 
@@ -513,7 +513,7 @@ let armorShow = ref(false)
 let ringShow = ref(false)
 let neckShow = ref(false)
 let equiShow = ref(false)
-let autoHealthRecovery = ref(0)
+let autoHealthRecovery = ref(null)
 let weapon = reactive({})
 let inDungeons = ref(false)  //是否在副本进程中
 let reChallenge = ref(false)
@@ -521,7 +521,7 @@ let upEChallenge = ref(false)
 let reEChallenge = ref(false)
 let dungeonsNow = ref({})
 let dungeonsArr = reactive([])
-let dungeonsTime = ref(0) //刷新副本计时器)
+let dungeonsTime = ref(null) //刷新副本计时器)
 let dungeonsTimeO = ref(30) //刷新副本时间间隔 单位：S
 let ring = reactive({})
 let neck = reactive({})
@@ -541,56 +541,7 @@ let GMOpened = ref(false)
 let needComparison = ref(true)
 let saveData = reactive({})
 let saveDateString = ref('')
-let debounceTime = ref(0)  //防抖计时
-
-// 窗口自适应
-window.onresize = () => {
-  if (debounceTime.value) {
-    clearTimeout(debounceTime.value);
-  }
-  debounceTime.value = setTimeout(() => {
-    debounceTime.value = 0;
-    initial()
-  }, 200);
-}
-
-initial();
-
-// 监听当前窗口是否处于后台状态
-document.addEventListener("visibilitychange", e => {
-  windowVisibilitychange()
-});
-
-onMounted(() => {
-  // 自动回血
-  autoHealthRecovery.value = setInterval(() => {
-    store.set_player_curhp(healthRecoverySpeed * (attribute.value.MAXHP.value / 50))
-  }, 1000)
-
-
-  // 自动保存
-  setInterval(() => {
-    saveGame()
-  }, 5 * 60 * 1000)
-
-  sysInfo = store.sysInfo
-  weapon = playerWeapon
-  armor = playerArmor
-  ring = playerRing
-  neck = playerNeck
-
-  //TODO:重新装备一次来解决不显示装备对比信息不显示的bug，不是最好但是是最快的
-  {
-    store.set_player_ring(handle.deepCopy(playerRing.value))
-    store.set_player_weapon(handle.deepCopy(playerWeapon.value))
-    store.set_player_armor(handle.deepCopy(playerArmor.value))
-    store.set_player_neck(handle.deepCopy(playerNeck.value))
-  }
-  var sd = localStorage.getItem('_sd')
-  loadGame(sd)
-  //生成随机副本
-  createdDungeons()
-})
+let debounceTime = ref(null)  //防抖计时
 
 let attribute = computed(() => {
   return store.playerAttribute.attribute
@@ -623,6 +574,55 @@ let operatorSchemaIsMobile = computed(() => {
   return store.operatorSchemaIsMobile
 })
 
+// 窗口自适应
+window.onresize = () => {
+  if (debounceTime.value) {
+    clearTimeout(debounceTime.value);
+  }
+  debounceTime.value = setTimeout(() => {
+    debounceTime.value = 0;
+    initial()
+  }, 200);
+}
+
+initial();
+
+// 监听当前窗口是否处于后台状态
+document.addEventListener("visibilitychange", e => {
+  windowVisibilitychange()
+});
+
+onMounted(() => {
+  // 自动回血
+  autoHealthRecovery.value = setInterval(() => {
+    store.set_player_curhp(healthRecoverySpeed * (attribute.value.MAXHP.value / 50))
+  }, 1000)
+
+
+  // 自动保存
+  setInterval(() => {
+    saveGame()
+  }, 5 * 60 * 1000)
+
+  handle.setReactive(sysInfo, store.sysInfo)
+  handle.setReactive(weapon, playerWeapon)
+  handle.setReactive(armor, playerArmor)
+  handle.setReactive(ring, playerRing)
+  handle.setReactive(neck, playerNeck)
+
+  //TODO:重新装备一次来解决不显示装备对比信息不显示的bug，不是最好但是是最快的
+  {
+    store.set_player_ring(handle.deepCopy(playerRing.value))
+    store.set_player_weapon(handle.deepCopy(playerWeapon.value))
+    store.set_player_armor(handle.deepCopy(playerArmor.value))
+    store.set_player_neck(handle.deepCopy(playerNeck.value))
+  }
+  var sd = localStorage.getItem('_sd')
+  loadGame(sd)
+  //生成随机副本
+  createdDungeons()
+})
+
 //向子组件提供数据
 provide("weaponShow", weaponShow)
 provide("armorShow", armorShow)
@@ -652,7 +652,7 @@ provide("showItemInfo", showItemInfo)
 watch(sysInfo, () => {
   var element = document.getElementById('sysInfo')
   //渲染完成后滚至最下端
-  this.$nextTick(() => {
+  nextTick(() => {
     element.scrollTop = element.scrollHeight + 20
   })
 })
@@ -703,7 +703,7 @@ function createdDungeons(constraint) {
 
   dungeonsArr = []
   let Co = [0.85, 0.1, 0.05]
-  for (let i = playerLv - 1; i > playerLv - 5; i--) {
+  for (let i = playerLv.value - 1; i > playerLv.value - 5; i--) {
     if (i < 1) {
       break
     }
@@ -718,7 +718,7 @@ function createdDungeons(constraint) {
       difficulty = 3
     }
     if (i > 100) {
-      var lv = Math.floor(playerLv * (100 - (playerLv - i)) / 100)
+      var lv = Math.floor(playerLv.value * (100 - (playerLv.value - i)) / 100)
     } else {
       var lv = i
     }
@@ -727,7 +727,7 @@ function createdDungeons(constraint) {
       dungeonsArr.push(handle.createRandomDungeons(i, difficulty))
     }
   }
-  for (let i = playerLv; i < playerLv + 6; i++) {
+  for (let i = playerLv.value; i < playerLv.value + 6; i++) {
     let difficulty = 1, r = Math.random()
     // 生成普通副本时有几率刷新高难度副本
     if (r <= Co[0]) {
@@ -738,7 +738,7 @@ function createdDungeons(constraint) {
       difficulty = 3
     }
     if (i > 100) {
-      var lv = Math.floor(this.playerLv * (100 + (i - playerLv)) / 100)
+      var lv = Math.floor(playerLv.value * (100 + (i - playerLv.value)) / 100)
     } else {
       var lv = i
     }
@@ -815,7 +815,7 @@ function windowVisibilitychange() {
     autoHealthRecovery.value = 0
   } else {
     autoHealthRecovery.value = setInterval(() => {
-      store.set_player_curhp(healthRecoverySpee.value * (attribute.value.MAXHP.value / 50))
+      store.set_player_curhp(healthRecoverySpeed.value * (attribute.value.MAXHP.value / 50))
     }, 1000)
   }
 }
@@ -1114,17 +1114,20 @@ function showItemInfo(e, type, item, needComparison_input) {
   }
   let x = e.pageX, y = e.pageY, maxH = window.innerHeight
   if (y < window.innerHeight / 2) {
-    itemDialogStyle = {
+    //设置itemDialogStyle
+    handle.setReactive(itemDialogStyle, {
       display: 'flex',
       'top': y + 20 + 'px',
       'left': x + 20 + 'px',
-    }
+    })
+
   } else {
-    itemDialogStyle = {
+    //设置itemDialogStyle
+    handle.setReactive(itemDialogStyle, {
       display: 'flex',
       'bottom': maxH - y + 20 + 'px',
       'left': x + 20 + 'px',
-    }
+    })
   }
   switch (type) {
     case 'weapon':

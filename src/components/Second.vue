@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import {ref, getCurrentInstance, onMounted, reactive,toRaw,defineExpose, defineEmits,inject} from 'vue'
+import {ref, getCurrentInstance, onMounted, reactive,toRaw,inject} from 'vue'
 import {eachRight, random} from "lodash"
 
 defineProps<{ msg: string }>()
@@ -18,7 +18,7 @@ function handleClick() {
 let helloRef = inject("helloRef");
 
 onMounted(()=>{
-  helloRef.value.person.name= '哈哈'
+  //helloRef.value.person.name= '哈哈'
 })
 
 </script>

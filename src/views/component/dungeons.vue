@@ -21,9 +21,9 @@ import {ref, reactive, computed, inject, defineExpose} from "vue";
 const store = useStore()
 
 let left = ref(0)
-let pro = ref(0)
-let timeOut = ref(0)
-let battleComTime = ref(0)
+let pro = ref(null)
+let timeOut = ref(null)
+let battleComTime = ref(null)
 let nextEvent = ref(1)
 let battleTime = ref(2000)
 let moveTime = ref(50)
