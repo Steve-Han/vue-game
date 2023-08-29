@@ -158,7 +158,7 @@ let recastNeedGold = computed(() => {
 })
 
 watch(item, (value, oldValue, onCleanup) => {
-  handle.setReactive(equiment, handle.deepCopy(item))
+  handle.setReactive(equiment, handle.deepCopy(item.value))
   if (!equiment.enchantlvl) {
     equiment['enchantlvl'] = 0
   }
