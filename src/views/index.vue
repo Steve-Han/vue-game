@@ -1089,9 +1089,6 @@ function initial() {
   let html = document.documentElement;
   let wW = html.clientHeight;
   let designSize = 1000; //设计高度
-  /*  if (!fullScreen) {
-      wW = html.clientHeight;
-    }*/
   let rem = (wW * 100) / designSize;
   document.documentElement.style.fontSize = rem + "px";
 
@@ -1107,14 +1104,9 @@ function contextmenu(e) {
 }
 
 function showItemInfo(e, type, item, needComparison_input) {
-  if (needComparison_input === false) {
-    needComparison.value = false
-  } else {
-    needComparison.value = true
-  }
+  needComparison.value = needComparison_input !== false;
   let x = e.pageX, y = e.pageY, maxH = window.innerHeight
   if (y < window.innerHeight / 2) {
-    //设置itemDialogStyle
     handle.setReactive(itemDialogStyle, {
       display: 'flex',
       'top': y + 20 + 'px',
@@ -1122,7 +1114,6 @@ function showItemInfo(e, type, item, needComparison_input) {
     })
 
   } else {
-    //设置itemDialogStyle
     handle.setReactive(itemDialogStyle, {
       display: 'flex',
       'bottom': maxH - y + 20 + 'px',
@@ -1553,7 +1544,6 @@ a {
 
 .dialog {
   position: absolute;
-  display: none;
   z-index: 10;
 
   & > div {

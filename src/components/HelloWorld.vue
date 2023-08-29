@@ -4,6 +4,7 @@ import {eachRight, random} from "lodash"
 
 defineProps<{ msg: string }>()
 
+let isDanger = ref(true);
 let proxy = null
 let person = ref({
   name: 'zhagnsan',
@@ -22,7 +23,7 @@ defineExpose({
 })
 
 function showProxy(e) {
-
+  isDanger.value = !isDanger.value;
   //先清空stu的属性
   //clear(stu)
   //再设置
@@ -67,7 +68,7 @@ for (let i = 0; i < 9; i++) {
 }
 
 function contextmenu(event) {
-  let number = parseInt(123);
+  let number = parseInt("123");
   console.log(number)
 }
 
@@ -87,11 +88,26 @@ function contextmenu(event) {
       <button type="button" @click="showProxy($event)">showProxy</button>
       <button type="button" @click="showProxy1($event)">showProxy1</button>
     </div>
+    <a href="https://baidu.com">Click me...</a>
   </div>
 </template>
 
 <style lang="scss" scoped>
-.read-the-docs {
-  color: #888;
+$list :white, grey, green, red , blue, #aaa;
+$map :(1:white, 2:grey, 3:green, 4:blue);
+
+a{
+  color: nth($list,6);
 }
+
+.error{
+  background-color: red;
+  border: 1px black solid;
+}
+
+.danger{
+  @extend .error;
+  color: red;
+}
+
 </style>

@@ -24,7 +24,7 @@
       <!-- <div class="button" @click="sell">一键出售</div> -->
     </div>
     <ul v-show="visible" :style="{ left: left + 'px', top: top + 'px' }" class="contextmenu">
-      <li @click="showItemInfo($event,currentItem.itemType,currentItem,'touch')"
+      <li @click="showItemInfo($event, currentItem.itemType, currentItem,'touch')"
           v-if="store.operatorSchemaIsMobile">查看
       </li>
       <li @click="buyTheEquipment()">购买</li>
@@ -225,13 +225,13 @@ let neckShow_p = inject('neckShow');
       // this.createEquip(equipQua,lv)
       var index = Math.floor(Math.random() * 4);
       if (index == 0) {
-        var item = weaponPanelRef(equipQua, lv);
+        var item = weaponPanelRef.value.createNewItem(equipQua, lv);
       } else if (index == 1) {
-        var item = armorPanelRef(equipQua, lv);
+        var item = armorPanelRef.value.createNewItem(equipQua, lv);
       } else if (index == 2) {
-        var item = ringPanelRef(equipQua, lv);
+        var item = ringPanelRef.value.createNewItem(equipQua, lv);
       } else {
-        var item = neckPanelRef(equipQua, lv);
+        var item = neckPanelRef.value.createNewItem(equipQua, lv);
       }
       item = JSON.parse(item);
       item.gold = parseInt(item.lv * item.quality.qualityCoefficient * (250 + 20 * item.lv))
