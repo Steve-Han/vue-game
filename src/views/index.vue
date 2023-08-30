@@ -958,12 +958,12 @@ function clearSysInfo() {
 }
 
 function createGMEquip() {
-  store.set_player_gold(parseInt(GMGold));
+  store.set_player_gold(parseInt(GMGold.value));
 
-  var item = weaponPanelRef.value.createNewItem(GMEquipQu, GMEquipLv);
+  var item = weaponPanelRef.value.createNewItem(GMEquipQu.value, GMEquipLv.value);
 
   item = JSON.parse(item);
-  store.set_player_lv(GMPlayerLv)
+  store.set_player_lv(GMPlayerLv.value)
 
   for (let i = 0; i < backpackPanelRef.value.grid.length; i++) {
     if (JSON.stringify(backpackPanelRef.value.grid[i]).length < 3) {
@@ -971,16 +971,7 @@ function createGMEquip() {
       break;
     }
   }
-  armorPanelRef.value.createNewItem(GMEquipQu, GMEquipLv);
-  item = JSON.parse(item);
-
-  for (let i = 0; i < backpackPanelRef.value.grid.length; i++) {
-    if (JSON.stringify(backpackPanelRef.value.grid[i]).length < 3) {
-      backpackPanelRef.value.grid[i] = item
-      break;
-    }
-  }
-  ringPanelRef.value.createNewItem(GMEquipQu, GMEquipLv);
+  armorPanelRef.value.createNewItem(GMEquipQu.value, GMEquipLv.value);
   item = JSON.parse(item);
 
   for (let i = 0; i < backpackPanelRef.value.grid.length; i++) {
@@ -989,8 +980,17 @@ function createGMEquip() {
       break;
     }
   }
+  ringPanelRef.value.createNewItem(GMEquipQu.value, GMEquipLv.value);
+  item = JSON.parse(item);
 
-  neckPanelRef.value.createNewItem(GMEquipQu, GMEquipLv);
+  for (let i = 0; i < backpackPanelRef.value.grid.length; i++) {
+    if (JSON.stringify(backpackPanelRef.value.grid[i]).length < 3) {
+      backpackPanelRef.value.grid[i] = item
+      break;
+    }
+  }
+
+  neckPanelRef.value.createNewItem(GMEquipQu.value, GMEquipLv.value);
   item = JSON.parse(item);
 
   for (let i = 0; i < backpackPanelRef.value.grid.length; i++) {
