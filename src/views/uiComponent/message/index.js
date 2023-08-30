@@ -58,6 +58,8 @@ Message.close = function (id, userOnClose) {
     if (typeof userOnClose === 'function') {
         userOnClose(instances[index])
     }
+    //移除div
+    instances[index].remove()
     instances.splice(index, 1)
 
     // 重新计算偏移量
@@ -80,6 +82,8 @@ Message.cancle = function (id, userOnCancle) {
     if (typeof userOnCancle === 'function') {
         userOnCancle(instances[index])
     }
+    //移除div
+    instances[index].remove()
     instances.splice(index, 1)
 
     // 重新计算偏移量
