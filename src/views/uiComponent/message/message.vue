@@ -17,38 +17,41 @@
 </template>
 
 <script setup>
-import {ref, computed, reactive, getCurrentInstance, onMounted,defineProps} from "vue";
+import {ref, computed, reactive, getCurrentInstance, onMounted, defineProps} from "vue";
 
 let props = defineProps({
-  onClose:Function,
-  onCancle:Function,
-  message:String,
-  closeBtnText:{
-    type:String,
-    default:'取消'
+  onClose: Function,
+  onCancle: Function,
+  message: String,
+  closeBtnText: {
+    type: String,
+    default: '取消'
   },
-  confirmBtnText:{
-    type:String,
-    default:'确认'
+  confirmBtnText: {
+    type: String,
+    default: '确认'
   },
-  title:{
-    type:String,
-    default:'提示'
+  title: {
+    type: String,
+    default: '提示'
   },
+  verticalOffset: {
+    type: Number,
+    default: 0
+  }
 });
 
 let visible = ref(true)
 let closed = ref(false)
-let verticalOffset = ref(0)
 let proxy = null
 
 let style = computed(() => {
   return {
-    'top': verticalOffset.value + 'px'
+    'top': props.verticalOffset + 'px'
   }
 })
 
-onMounted(()=>{
+onMounted(() => {
   proxy = getCurrentInstance();
 })
 

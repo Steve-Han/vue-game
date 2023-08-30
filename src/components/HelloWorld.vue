@@ -33,7 +33,6 @@ onMounted(() => {
 
 function showProxy(e){
 // 通过getCurrentInstance().appContext访问全局属性
-  console.log(proxy.appContext.config.globalProperties)
   proxy.appContext.config.globalProperties.$message({
     message: '刷到了独特装备哦，不看看嘛？',
     onCancle: () => {
@@ -59,8 +58,6 @@ function changeMessage(data) {
 function changeMsg(data) {
   changeMessage(data)
 }
-
-
 
 
 function deepCopy(data) {

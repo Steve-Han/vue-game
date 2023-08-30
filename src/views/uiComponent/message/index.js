@@ -38,13 +38,12 @@ let Message = (options = {}) => {
     render(MessageConstructor, mountNode);
 
     // 实例id赋值
-    MessageConstructor.id = id
+    mountNode.id = id
 
     instances.push(mountNode)
 
     //然后把转换成真实DOM的Notice组件插入到body里
     document.body.appendChild(mountNode);
-
     return MessageConstructor
 }
 
