@@ -21,10 +21,10 @@ onMounted(()=>{
       <img src="./assets/vue.svg" class="logo vue" alt="Vue logo"/>
     </a>
   </div>-->
-<!--  <HelloWorld msg="Vite + Vue" ref="helloRef"/>-->
+  <HelloWorld msg="Vite + Vue" ref="helloRef"/>
 <!--  <Second msg="msg"></Second>-->
 
-  <router-view/>
+<!--  <router-view/>-->
 </template>
 
 <style scoped>

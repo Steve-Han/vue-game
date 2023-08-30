@@ -12,3 +12,5 @@ app.use(pinia);
 app.use(router)
 app.mount('#app');
 
+app.config.globalProperties.$message = Message;
+

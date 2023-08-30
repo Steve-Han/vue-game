@@ -36,8 +36,6 @@ function showProxy(e){
   console.log(proxy.appContext.config.globalProperties)
   proxy.appContext.config.globalProperties.$message({
     message: '刷到了独特装备哦，不看看嘛？',
-    closeBtnText: '看看',
-    confirmBtnText: '辣鸡我不要',
     onCancle: () => {
       console.log('onCancle')
     },
