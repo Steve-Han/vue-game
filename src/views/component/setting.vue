@@ -10,12 +10,17 @@
 </template>
 <script setup>
 import {useStore} from '../../store'
-import {ref, reactive, defineProps, watch} from "vue";
+import {ref, reactive, defineProps, watch, getCurrentInstance, onMounted} from "vue";
 
 const store = useStore()
+let proxy = null
+
+onMounted(() => {
+  proxy = getCurrentInstance()
+})
 
 function clearSaveData() {
-  this.$message({
+  proxy.appContext.config.globalProperties.$message({
     message: '这将清除你的存档并刷新游戏，你确定要这样做吗?',
     title: '提示',
     confirmBtnText: '我要重开！',

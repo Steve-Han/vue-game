@@ -37,7 +37,7 @@
 </template>
 <script setup>
 import {useStore} from '../../store'
-import {ref, reactive, computed, onMounted, inject} from "vue";
+import {ref, reactive, computed, onMounted, inject, getCurrentInstance} from "vue";
 import S_HOLY01_PNG from '../../assets/icons/S_Holy01.png'
 import ATK_PNG  from '../../assets/icons/ATK.png'
 import CRIT_PNG  from '../../assets/icons/CRIT.png'
@@ -139,6 +139,8 @@ let attr = reactive([
   },
 ])
 
+let proxy = null
+
 onMounted(() => {
   caculateWillGetreincarnationPoint()
 
@@ -195,6 +197,8 @@ onMounted(() => {
   }
   reincarnationPoint.value = reincarnationData.value.point
   reinCount.value = reincarnationData.value.count
+
+    proxy = getCurrentInstance()
 })
 
 
@@ -217,7 +221,7 @@ function reincarnationConfirm() {
     });
     return
   }
-  this.$message({
+  proxy.appContext.config.globalProperties.$message({
     message: `你将获得${willGetreincarnationPoint.value}转生点数，同时你的金币和装备都会消失。`,
     title: '提示',
     closeBtnText: '算了',

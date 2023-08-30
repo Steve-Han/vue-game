@@ -484,7 +484,7 @@ import qa from './component/qa.vue'
 import {Base64} from 'js-base64'
 import handle from '../assets/js/handle'
 import {useStore} from '../store'
-import {ref, reactive, watch, onMounted, computed, provide, nextTick} from "vue"
+import {ref, reactive, watch, onMounted, computed, provide, nextTick, getCurrentInstance} from "vue"
 
 const store = useStore()
 
@@ -542,6 +542,7 @@ let needComparison = ref(true)
 let saveData = reactive({})
 let saveDateString = ref('')
 let debounceTime = ref(null)  //防抖计时
+let proxy = null
 
 let attribute = computed(() => {
   return store.playerAttribute.attribute
@@ -621,6 +622,8 @@ onMounted(() => {
   loadGame(sd)
   //生成随机副本
   createdDungeons()
+
+  proxy = getCurrentInstance()
 })
 
 //向子组件提供数据
@@ -1043,7 +1046,7 @@ function eventEnd() {
 }
 
 function resetEndlessLv() {
-  this.$message({
+  proxy.appContext.config.globalProperties.$message({
     message: '这将重置你的无尽等级，确认操作吗？',
     title: '提示',
     confirmBtnText: '重置',

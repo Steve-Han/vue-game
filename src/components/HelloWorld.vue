@@ -1,11 +1,14 @@
 <script setup lang="ts">
 import {ref, getCurrentInstance, onMounted, reactive, toRaw} from 'vue'
 import {eachRight, random} from "lodash"
+import {createVNode, render} from "vue";
+import MessageComponent from "../views/uiComponent/message/message.vue";
+import Second from "./Second.vue";
 
 defineProps<{ msg: string }>()
 
 let isDanger = ref(true);
-let proxy = null
+
 let person = ref({
   name: 'zhagnsan',
   age: 12
@@ -22,14 +25,27 @@ defineExpose({
   person
 })
 
-function showProxy(e) {
-  isDanger.value = !isDanger.value;
-  //先清空stu的属性
-  //clear(stu)
-  //再设置
-  Object.assign(stu, {'trick': 'joke'})
-}
+let proxy = null
 
+onMounted(() => {
+  proxy = getCurrentInstance()
+})
+
+function showProxy(e){
+// 通过getCurrentInstance().appContext访问全局属性
+  console.log(proxy.appContext.config.globalProperties)
+  proxy.appContext.config.globalProperties.$message({
+    message: '刷到了独特装备哦，不看看嘛？',
+    closeBtnText: '看看',
+    confirmBtnText: '辣鸡我不要',
+    onCancle: () => {
+      console.log('onCancle')
+    },
+    onClose: () => {
+      console.log('onClose')
+    }
+  })
+}
 
 function showProxy1(e) {
   console.log('showProxy1')
@@ -46,9 +62,7 @@ function changeMsg(data) {
   changeMessage(data)
 }
 
-onMounted(() => {
-  proxy = getCurrentInstance()
-})
+
 
 
 function deepCopy(data) {
@@ -71,6 +85,23 @@ function contextmenu(event) {
   let number = parseInt("123");
   console.log(number)
 }
+
+let userOnClose = function () {
+  console.log('onClose')
+}
+let userOnCancle = function () {
+  console.log('onCancle')
+}
+const MessageConstructor = createVNode(Second, {
+  onClose:userOnClose,
+  onCancle:userOnCancle
+});
+//创建一个空的div
+let mountNode = document.createElement("div");
+//render函数的作用就是将Notice组件的虚拟DOM转换成真实DOM并插入到mountNode元素里
+//render(MessageConstructor, mountNode);
+//然后把转换成真实DOM的Notice组件插入到body里
+//document.body.appendChild(mountNode);
 
 </script>
 

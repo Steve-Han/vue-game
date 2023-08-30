@@ -1,8 +1,10 @@
 <script setup lang="ts">
-import {ref, getCurrentInstance, onMounted, reactive,toRaw,inject} from 'vue'
-import {eachRight, random} from "lodash"
+import {ref, getCurrentInstance, onMounted, reactive,toRaw,inject,defineProps} from 'vue'
 
-defineProps<{ msg: string }>()
+let props = defineProps<{ msg: string,
+  onClose:Function,
+  onCancle:Function,
+}>();
 
 let proxy = ref(1)
 
@@ -12,7 +14,10 @@ const emit = defineEmits(['changeMsg'])
 function handleClick() {
   // 参数1：事件名
   // 参数2：传给父组件的值
-  emit('changeMsg', '鲨鱼辣椒')
+  //emit('changeMsg', '鲨鱼辣椒')
+
+  props.onCancle();
+  props.onClose();
 }
 
 let helloRef = inject("helloRef");

@@ -33,7 +33,8 @@
 </template>
 <script setup>
 import {useStore} from '../../store'
-import {ref, reactive, defineProps, watch, onMounted, inject} from "vue";
+import {ref, reactive, defineProps, watch, onMounted, inject, getCurrentInstance} from "vue";
+import handle from "../../assets/js/handle.js";
 
 const store = useStore()
 
@@ -51,6 +52,7 @@ let isTouch = ref(false)
 let tipsFlag = ref(false)
 let tipsFlagComfirm = ref(false)
 let shopRoot = ref(null)
+let proxy = null
 
 watch(visible, (value, oldValue, onCleanup) => {
   if (value) {
@@ -82,6 +84,7 @@ watch(refreshTime, (value, oldValue, onCleanup) => {
 
 onMounted(() => {
   refreshShopItems(true);
+  proxy = getCurrentInstance()
 })
 
 /**
@@ -95,7 +98,7 @@ function refreshShopItems(constraint) {
   if (tipsFlagComfirm.value) {
     if (tipsFlag.value && !constraint) {
       tipsFlagComfirm.value = true
-      this.$message({
+      proxy.appContext.config.globalProperties.$message({
         message: '刷到了独特装备哦，不看看嘛？',
         closeBtnText: '看看',
         confirmBtnText: '辣鸡我不要',
@@ -148,7 +151,7 @@ function refreshShopItems(constraint) {
     }
     if (tipsFlag.value && !constraint) {
       tipsFlagComfirm.value = true
-      this.$message({
+      proxy.appContext.config.globalProperties.$message({
         message: '刷到了独特装备哦，不看看嘛？',
         closeBtnText: '看看',
         confirmBtnText: '辣鸡我不要',
@@ -246,7 +249,7 @@ let neckShow_p = inject('neckShow');
 
   function openMenu(k, e) {
     currentItemIndex.value= k;
-    currentItem = grid[k];
+    handle.setReactive(currentItem, grid[k])
     const menuMinWidth = 105;
     const offsetLeft = shopRoot.value.getBoundingClientRect().left; // container margin left
     const offsetWidth = shopRoot.value.offsetWidth; // container width
@@ -284,9 +287,6 @@ let neckShow_p = inject('neckShow');
   }
 
   function buyTheEquipment() {
-    // var gold =
-    //   this.currentItem.lv * this.currentItem.quality.qualityCoefficient * (200+5*this.currentItem.lv);
-    // gold = parseInt(gold)
     if (store.playerAttribute.GOLD < currentItem.gold) {
       store.set_sys_info({
         msg: `
