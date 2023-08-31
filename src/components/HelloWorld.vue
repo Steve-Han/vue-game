@@ -4,6 +4,7 @@ import {eachRight, random} from "lodash"
 import {createVNode, render} from "vue";
 import MessageComponent from "../views/uiComponent/message/message.vue";
 import Second from "./Second.vue";
+import _ from 'lodash'
 
 let props = defineProps({ msg: String });
 
@@ -31,10 +32,11 @@ onMounted(() => {
 })
 
 function showProxy(e) {
+
 }
 
 function showProxy1(e) {
-  console.log('showProxy1')
+
 }
 
 let root = ref(null)
@@ -87,7 +89,6 @@ let mountNode = document.createElement("div");
 //然后把转换成真实DOM的Notice组件插入到body里
 //document.body.appendChild(mountNode);
 
-let left = ref(0)
 
 /*setInterval(()=>{
   left.value += 0.5;
@@ -97,10 +98,8 @@ let left = ref(0)
 <template>
   <div ref="root" @contextmenu.prevent="contextmenu"> <!--阻止右键的默认行为-->
     <!--数据双向绑定-->
-    <div class="player" :style="{'left':left+'%',backgroundPosition:-parseInt(left % 4)*32+'px -96px'}">
       <!-- <img src="../../assets/icons/map/player-s.png" alt=""> -->
       <!-- :style="{background-position:}" -->
-    </div>
 <!--    <div class="error" v-for="(v,k) in items" :key="k">
       {{ v + ":" + k }}
     </div>-->

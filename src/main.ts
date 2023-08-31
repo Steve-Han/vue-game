@@ -1,7 +1,8 @@
 import {createApp} from 'vue'
-import './style.css'
+//import './style.css'
 import {createPinia} from 'pinia'
 import Message from './views/uiComponent/message/index.js'
+import './assets/css/base.scss'
 import App from './App.vue'
 import router from "./router.js"
 

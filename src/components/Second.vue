@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import {ref, getCurrentInstance, onMounted, reactive,toRaw,inject,defineProps} from 'vue'
+import {ref, getCurrentInstance, onMounted, reactive,toRaw,inject} from 'vue'
 
 let props = defineProps<{ msg: string,
   onClose:Function,
