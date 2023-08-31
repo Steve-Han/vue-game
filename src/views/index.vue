@@ -589,7 +589,7 @@ window.onresize = () => {
 initial();
 
 // 监听当前窗口是否处于后台状态
-document.addEventListener("visibilitychange", e => {
+document.addEventListener("visibilitychange", () => {
   windowVisibilitychange()
 });
 
@@ -1022,7 +1022,10 @@ function closeDungeonsInfo() {
 }
 
 function eventBegin() {
-  dungeonsRef.value.dungeons.value = dungeonsNow.value
+  if (JSON.stringify(dungeonsNow.value) == "{}") {
+    return;
+  }
+  handle.setReactive(dungeonsRef.value.dungeons, dungeonsNow.value)
   dungeonsRef.value.evenHandle()
 
   inDungeons.value = true
@@ -1424,7 +1427,7 @@ a {
     top: 0.1rem;
     bottom: 0.1rem;
     border: 2px solid #ccc;
-    background-image: url(../assets/img/map.jpg);
+    /*background-image: url(../assets/img/map.jpg);*/
     background-repeat: no-repeat;
     background-size: 100% 100%;
 
